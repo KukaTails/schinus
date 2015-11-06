@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class Source implements MessageProducer {
   public static final char EOL = '\n';     // end-of-line character
-  public static final char EOF = (char)0;  // end-of-file character
+  public static final char EOF = (char) 0;  // end-of-file character
 
   private BufferedReader reader;           // reader for the source program
   private String line;                     // source line
@@ -23,12 +23,11 @@ public class Source implements MessageProducer {
 
   /**
    * Constructor.
+   *
    * @param reader the reader for the source program
    * @throws IOException if an I/O error occurred
    */
-  public Source(BufferedReader reader)
-      throws IOException
-  {
+  public Source(BufferedReader reader) throws IOException {
     this.lineNum = 0;
     this.currentPos = -2;  // set to -2 to read the first source line
     this.reader = reader;
@@ -37,31 +36,30 @@ public class Source implements MessageProducer {
 
   /**
    * Getter.
+   *
    * @return the current source line number.
    */
-  public int getLineNum()
-  {
+  public int getLineNum() {
     return lineNum;
   }
 
   /**
    * Getter.
+   *
    * @return the position of the next source character in the
    * current source line.
    */
-  public int getPosition()
-  {
+  public int getPosition() {
     return currentPos;
   }
 
   /**
    * Return the source character at the current position.
+   *
    * @return the source character at the current position.
    * @throws Exception if an error occurred.
    */
-  public char currentChar()
-      throws Exception
-  {
+  public char currentChar() throws Exception {
     // First time?
     if (currentPos == -2) {
       readLine();
@@ -88,12 +86,11 @@ public class Source implements MessageProducer {
 
   /**
    * Consume the current source character and return the next character.
+   *
    * @return the next source character.
    * @throws Exception if an error occurred.
    */
-  public char nextChar()
-      throws Exception
-  {
+  public char nextChar() throws Exception {
     ++currentPos;
     return currentChar();
   }
@@ -101,12 +98,11 @@ public class Source implements MessageProducer {
   /**
    * Return the source character following the current character without
    * consuming the current character.
+   *
    * @return the following character.
    * @throws Exception if an error occurred.
    */
-  public char peekChar()
-      throws Exception
-  {
+  public char peekChar() throws Exception {
     currentChar();
     if (line == null) {
       return EOF;
@@ -120,9 +116,7 @@ public class Source implements MessageProducer {
    * @return true if at the end of the line, else return false.
    * @throws Exception if an error occurred.
    */
-  public boolean atEol()
-      throws Exception
-  {
+  public boolean atEol() throws Exception {
     return (line != null) && (currentPos == line.length());
   }
 
@@ -130,9 +124,7 @@ public class Source implements MessageProducer {
    * @return true if at the end of the file, else return false.
    * @throws Exception if an error occurred.
    */
-  public boolean atEof()
-      throws Exception
-  {
+  public boolean atEof() throws Exception {
     // First time?
     if (currentPos == -2) {
       readLine();
@@ -144,11 +136,10 @@ public class Source implements MessageProducer {
   /**
    * Skip the rest of the current input line
    * by forcing the next read to read a new line.
+   *
    * @throws Exception if an error occurred.
    */
-  public void skipToNextLine()
-      throws Exception
-  {
+  public void skipToNextLine() throws Exception {
     if (line != null) {
       currentPos = line.length() + 1;
     }
@@ -156,11 +147,10 @@ public class Source implements MessageProducer {
 
   /**
    * Read the next source line.
+   *
    * @throws IOException if an I/O error occurred.
    */
-  private void readLine()
-      throws IOException
-  {
+  private void readLine() throws IOException {
     line = reader.readLine();  // null when at the end of the source
     currentPos = -1;
 
@@ -171,22 +161,20 @@ public class Source implements MessageProducer {
     // Send a source line message containing the line number
     // and the line text to all the listeners.
     if (line != null) {
-      sendMessage(new Message(SOURCE_LINE,
-          new Object[] {lineNum, line}));
+      sendMessage(new Message(SOURCE_LINE, new Object[] {lineNum, line}));
     }
   }
 
   /**
    * Close the source.
+   *
    * @throws Exception if an error occurred.
    */
-  public void close()
-      throws Exception
-  {
+  public void close() throws Exception {
     if (reader != null) {
       try {
         reader.close();
-      } catch (IOException ex) {
+      } catch(IOException ex) {
         ex.printStackTrace();
         throw ex;
       }
@@ -195,28 +183,28 @@ public class Source implements MessageProducer {
 
   /**
    * Add a parser message listener.
+   *
    * @param listener the message listener to add.
    */
-  public void addMessageListener(MessageListener listener)
-  {
+  public void addMessageListener(MessageListener listener) {
     messageHandler.addListener(listener);
   }
 
   /**
    * Remove a parser message listener.
+   *
    * @param listener the message listener to remove.
    */
-  public void removeMessageListener(MessageListener listener)
-  {
+  public void removeMessageListener(MessageListener listener) {
     messageHandler.removeListener(listener);
   }
 
   /**
    * Notify listeners after setting the message.
+   *
    * @param message the message to set.
    */
-  public void sendMessage(Message message)
-  {
+  public void sendMessage(Message message) {
     messageHandler.sendMessage(message);
   }
 }

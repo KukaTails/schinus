@@ -7,7 +7,7 @@ import java.util.Hashtable;
 
 /**
  * <h1>ClangTokenType</h1>
- *
+ * <p>
  * <p>C language token types.</p>
  */
 public enum ClangTokenType implements TokenType {
@@ -28,14 +28,14 @@ public enum ClangTokenType implements TokenType {
   SWITCH, CASE, RETURN,
 
   // other keywords
-  DEFAULT,  SIZEOF,
+  DEFAULT, SIZEOF,
 
   // basic operators
   ADD("+"), SUB("-"), MUL("*"), DIV("/"), MOD("%"),
   ADD_ASSIGN("+="), SUB_ASSIGN("-="), MUL_ASSIGN("*="), DIV_ASSIGN("/="), MOD_ASSIGN("%="),
 
   // relational operators
-  G_OP(">"), L_OP("<"),  GE_OP(">="), LE_OP("<="), EQ_OP("=="), NE_EQ("!="),
+  G_OP(">"), L_OP("<"), GE_OP(">="), LE_OP("<="), EQ_OP("=="), NE_EQ("!="),
 
   // bit operators
   BIT_AND("&"), BIT_XOR("^"), BIT_OR("|"), BIT_NOT("~"),
@@ -55,10 +55,13 @@ public enum ClangTokenType implements TokenType {
   ASSIGN("="), INC_OP("++"), DEC_OP("--"), PTR_OP("->"), DOT("."),
   ELLIPSIS("..."),
 
-  // others symbols
+  // other symbols
   COLON(":"), COMMA(","), SEMICOLON(";"),
   LEFT_PAREN("("), RIGHT_PAREN(")"), LEFT_BRACKET("["), RIGHT_BRACKET("]"),
-  LEFT_BRACE("{"), RIGHT_BRACE("}");
+  LEFT_BRACE("{"), RIGHT_BRACE("}"),
+
+  // other token types
+  ERROR, END_OF_FILE;
 
   private String text; // token text
 
@@ -71,6 +74,7 @@ public enum ClangTokenType implements TokenType {
 
   /**
    * Constructor.
+   *
    * @param text the token text
    */
   private ClangTokenType(String text) {
@@ -79,6 +83,7 @@ public enum ClangTokenType implements TokenType {
 
   /**
    * Getter.
+   *
    * @return the token text.
    */
   public String getText() {
@@ -90,6 +95,7 @@ public enum ClangTokenType implements TokenType {
 
   // Set of lower-cased C reserved word text strings.
   public static HashSet<String> RESERVED_WORDS = new HashSet<>();
+
   static {
     ClangTokenType[] values = ClangTokenType.values();
     for (int i = FIRST_RESERVED_INDEX; i <= LAST_RESERVED_INDEX; ++i) {
@@ -103,6 +109,7 @@ public enum ClangTokenType implements TokenType {
   // Hash table of C language special symbols.
   // Each special symbol's text is the key to its C language token type.
   public static Hashtable<String, ClangTokenType> SPECIAL_SYMBOLS = new Hashtable<>();
+
   static {
     ClangTokenType[] values = ClangTokenType.values();
     for (int i = FIRST_SPECIAL_INDEX; i <= LAST_SPECIAL_INDEX; ++i) {
