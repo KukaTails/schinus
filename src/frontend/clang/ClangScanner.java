@@ -1,11 +1,23 @@
 package frontend.clang;
 
 import static frontend.Source.EOF;
+import static frontend.clang.ClangErrorCode.INVALID_CHARACTER;
 
 import frontend.Token;
 import frontend.Source;
 import frontend.Scanner;
+import frontend.EofToken;
+import frontend.clang.tokens.ClangErrorToken;
+import frontend.clang.tokens.ClangWordToken;
+import frontend.clang.tokens.ClangStringToken;
+import frontend.clang.tokens.ClangNumberToken;
+import frontend.clang.tokens.ClangSpecialSymbolToken;
 
+/**
+ * <h1>ClangScanner</h1>
+ * <p>
+ * <p>C language scanner to scan character stream.</p>
+ */
 public class ClangScanner extends Scanner {
   /**
    * Constructor
@@ -17,7 +29,7 @@ public class ClangScanner extends Scanner {
   }
 
   /**
-   * Extract and return the next Pascal token from the source.
+   * Extract and return the next C language token from the source.
    *
    * @return the next token.
    * @throws Exception if an error occurred.
@@ -31,30 +43,34 @@ public class ClangScanner extends Scanner {
     // Construct the next token.  The current character determines the
     // token type.
 
-    /*if (currentChar == EOF) {
+    // EOF token
+    if (currentChar == EOF) {
       token = new EofToken(source);
     }
+    // Word(Identifier and reserved word) token
     else if (Character.isLetter(currentChar)) {
-      token = new PascalWordToken(source);
+      token = new ClangWordToken(source);
     }
+    // Number constant
     else if (Character.isDigit(currentChar)) {
-      token = new PascalNumberToken(source);
+      token = new ClangNumberToken(source);
     }
+    // String constant
     else if (currentChar == '\'') {
-      token = new PascalStringToken(source);
+      token = new ClangStringToken(source);
     }
-    else if (PascalTokenType.SPECIAL_SYMBOLS
-        .containsKey(Character.toString(currentChar))) {
-      token = new PascalSpecialSymbolToken(source);
+    // Special symbols(operators and delimiter)
+    else if (ClangTokenType.SPECIAL_SYMBOLS.containsKey(Character.toString(currentChar))) {
+      token = new ClangSpecialSymbolToken(source);
     }
+    // Wrong token
     else {
-      token = new PascalErrorToken(source, INVALID_CHARACTER,
-          Character.toString(currentChar));
+      token = new ClangErrorToken(source, INVALID_CHARACTER, Character.toString(currentChar));
       nextChar();  // consume character
     }
-    */
+
     //return token;
-    return null; // TODO
+    return token; // TODO
   }
 
   /**

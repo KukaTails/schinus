@@ -1,7 +1,9 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import frontend.Token;
+import frontend.Scanner;
 import frontend.Source;
-import frontend.clang.tokens.ClangNumberToken;
+import frontend.clang.ClangScanner;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -12,21 +14,17 @@ import java.io.StringReader;
 public class ClangNumberTokenTest {
   String testString = "12345";
   Source source;
-  ClangNumberToken numberToken;
+  Scanner clangScanner;
 
   @Before
   public void setUp() throws Exception {
     source = new Source(new BufferedReader(new StringReader(testString)));
-    numberToken = new ClangNumberToken(source);
+    clangScanner = new ClangScanner(source);
   }
 
   @Test
   public void testExtract() throws Exception {
-    assertEquals(testString, numberToken.getText());
-  }
-
-  @Test
-  public void testExtractNumber() throws Exception {
-
+    Token token = clangScanner.nextToken();
+    assertEquals(testString, token.getText());
   }
 }

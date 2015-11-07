@@ -2,9 +2,11 @@ package frontend.clang;
 
 public enum ClangErrorCode {
   INVALID_NUMBER("Invalid number"),
+  INVALID_CHARACTER("Invalid character"),
   RANGE_INTEGER("Integer literal out of range"),
   RANGE_REAL("Real literal out of range"),
-  TOO_MANY_ERRORS(-102, "Too many syntax errors");
+  TOO_MANY_ERRORS(-102, "Too many syntax errors"),
+  UNEXPECTED_EOF("Unexpected end of file");
 
   private int status;   // exit status
   private String message;  // error message

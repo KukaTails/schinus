@@ -61,6 +61,7 @@ public enum ClangTokenType implements TokenType {
   LEFT_BRACE("{"), RIGHT_BRACE("}"),
 
   // other token types
+  IDENTIFIER, FLOAT_CONATANT, INTEGER_CONSTANT, CHAR_CONSTANT ,STRING_LITERAL,
   ERROR, END_OF_FILE;
 
   private String text; // token text

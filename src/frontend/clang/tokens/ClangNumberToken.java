@@ -1,7 +1,7 @@
 package frontend.clang.tokens;
 
-import static frontend.clang.ClangTokenType.INT;
-import static frontend.clang.ClangTokenType.DOUBLE;
+import static frontend.clang.ClangTokenType.INTEGER_CONSTANT;
+import static frontend.clang.ClangTokenType.FLOAT_CONATANT;
 import static frontend.clang.ClangTokenType.ERROR;
 import static frontend.clang.ClangErrorCode.RANGE_REAL;
 import static frontend.clang.ClangErrorCode.RANGE_INTEGER;
@@ -51,7 +51,7 @@ public class ClangNumberToken extends ClangToken {
     boolean sawDotDot = false;     // true if saw .. token
     char currentChar;              // current character
 
-    type = INT;  // assume INTEGER token type for now
+    type = INTEGER_CONSTANT;  // assume INTEGER token type for now
 
     // Extract the digits of the whole part of the number.
     wholeDigits = unsignedIntegerDigits(textBuffer);
@@ -66,7 +66,7 @@ public class ClangNumberToken extends ClangToken {
       if (peekChar() == '.') {
         sawDotDot = true;  // it's a ".." token, so don't consume it
       } else {
-        type = DOUBLE;  // decimal point, so token type is REAL
+        type = FLOAT_CONATANT;  // decimal point, so token type is REAL
         textBuffer.append(currentChar);
         currentChar = nextChar();  // consume decimal point
 
@@ -82,7 +82,7 @@ public class ClangNumberToken extends ClangToken {
     // There cannot be an exponent if we already saw a ".." token.
     currentChar = currentChar();
     if (!sawDotDot && ((currentChar == 'E') || (currentChar == 'e'))) {
-      type = DOUBLE;  // exponent, so token type is REAL
+      type = FLOAT_CONATANT;  // exponent, so token type is REAL
       textBuffer.append(currentChar);
       currentChar = nextChar();  // consume 'E' or 'e'
 
@@ -98,7 +98,7 @@ public class ClangNumberToken extends ClangToken {
     }
 
     // Compute the value of an integer number token.
-    if (type == INT) {
+    if (type == INTEGER_CONSTANT) {
       int integerValue = computeIntegerValue(wholeDigits);
 
       if (type != ERROR) {
@@ -107,7 +107,7 @@ public class ClangNumberToken extends ClangToken {
     }
 
     // Compute the value of a real number token.
-    else if (type == DOUBLE) {
+    else if (type == FLOAT_CONATANT) {
       float floatValue = computeFloatValue(wholeDigits, fractionDigits, exponentDigits, exponentSign);
 
       if (type != ERROR) {

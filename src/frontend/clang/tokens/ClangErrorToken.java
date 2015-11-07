@@ -35,6 +35,7 @@ public class ClangErrorToken extends ClangToken {
    * @throws Exception if an error occurred.
    * @throws Exception
    */
+  @Override
   protected void extract() throws Exception {
 
   }
