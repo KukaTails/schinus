@@ -1,5 +1,5 @@
 package message;
 
 public enum MessageType {
-  SOURCE_LINE
+  SOURCE_LINE, SYNTAX_ERROR;
 }
