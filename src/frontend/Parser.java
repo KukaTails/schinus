@@ -9,10 +9,10 @@ public abstract class Parser implements MessageProducer {
   //protected static SymTabStack symTabStack;        // symbol table stack
   protected static MessageHandler messageHandler;  // message handler delegate
 
-  // static {
-  //  symTabStack = SymTabFactory.createSymTabStack();
-  //  messageHandler = new MessageHandler();
-  // }
+  static {
+    //  symTabStack = SymTabFactory.createSymTabStack();
+    messageHandler = new MessageHandler();
+  }
 
   protected Scanner scanner;  // scanner used with this parser
 
