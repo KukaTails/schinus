@@ -1,4 +1,6 @@
-import static org.junit.Assert.*;
+package tokentest;
+
+import static org.junit.Assert.assertEquals;
 
 import frontend.Token;
 import frontend.Source;
@@ -15,24 +17,20 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class ClangSpecialSymbolTokenTest {
-  private static String[] specialSymbols = {};
-
+public class ClangWordTokenTest {
   private String testString;
-  private String tokenText;
   private String tokenType;
+  private String tokenText;
 
-  public ClangSpecialSymbolTokenTest(String testString, String tokenText, String tokenType) {
+  public ClangWordTokenTest(String testString, String tokenType, String tokenText) {
     this.testString = testString;
-    this.tokenText = tokenText;
     this.tokenType = tokenType;
+    this.tokenText = tokenText;
   }
 
   @Parameterized.Parameters
-  public static Collection CollectDate() {
-    return Arrays.asList(new Object[][] {
-        {"+", "+", "ADD"}
-    });
+  public static Collection collectDate() {
+    return Arrays.asList(new Object[][] {{"and", "LOGICAL_AND", "and"}, {"or", "LOGICAL_OR", "or"}, {"iF", "IDENTIFIER", "iF"}});
   }
 
   @Test
@@ -41,7 +39,7 @@ public class ClangSpecialSymbolTokenTest {
     Scanner scanner = new ClangScanner(source);
 
     Token token = scanner.nextToken();
-    assertEquals(tokenText, token.getText());
     assertEquals(tokenType, token.getType().toString());
+    assertEquals(tokenText, token.getText());
   }
 }

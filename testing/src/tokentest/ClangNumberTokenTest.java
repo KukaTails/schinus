@@ -1,3 +1,5 @@
+package tokentest;
+
 import static org.junit.Assert.assertEquals;
 
 import frontend.Token;
