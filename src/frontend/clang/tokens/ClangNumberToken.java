@@ -1,7 +1,7 @@
 package frontend.clang.tokens;
 
+import static frontend.clang.ClangTokenType.FLOAT_CONSTANT;
 import static frontend.clang.ClangTokenType.INTEGER_CONSTANT;
-import static frontend.clang.ClangTokenType.FLOAT_CONATANT;
 import static frontend.clang.ClangTokenType.ERROR;
 import static frontend.clang.ClangErrorCode.RANGE_REAL;
 import static frontend.clang.ClangErrorCode.RANGE_INTEGER;
@@ -42,8 +42,7 @@ public class ClangNumberToken extends ClangToken {
    * @param textBuffer the buffer to append the token's characters.
    * @throws Exception if an error occurred.
    */
-  protected void extractNumber(StringBuilder textBuffer)
-      throws Exception {
+  protected void extractNumber(StringBuilder textBuffer) throws Exception {
     String wholeDigits = null;     // digits before the decimal point
     String fractionDigits = null;  // digits after the decimal point
     String exponentDigits = null;  // exponent digits
@@ -66,7 +65,7 @@ public class ClangNumberToken extends ClangToken {
       if (peekChar() == '.') {
         sawDotDot = true;  // it's a ".." token, so don't consume it
       } else {
-        type = FLOAT_CONATANT;  // decimal point, so token type is REAL
+        type = FLOAT_CONSTANT;  // decimal point, so token type is REAL
         textBuffer.append(currentChar);
         currentChar = nextChar();  // consume decimal point
 
@@ -82,7 +81,7 @@ public class ClangNumberToken extends ClangToken {
     // There cannot be an exponent if we already saw a ".." token.
     currentChar = currentChar();
     if (!sawDotDot && ((currentChar == 'E') || (currentChar == 'e'))) {
-      type = FLOAT_CONATANT;  // exponent, so token type is REAL
+      type = FLOAT_CONSTANT;  // exponent, so token type is REAL
       textBuffer.append(currentChar);
       currentChar = nextChar();  // consume 'E' or 'e'
 
@@ -107,7 +106,7 @@ public class ClangNumberToken extends ClangToken {
     }
 
     // Compute the value of a real number token.
-    else if (type == FLOAT_CONATANT) {
+    else if (type == FLOAT_CONSTANT) {
       float floatValue = computeFloatValue(wholeDigits, fractionDigits, exponentDigits, exponentSign);
 
       if (type != ERROR) {

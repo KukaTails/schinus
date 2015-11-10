@@ -1,6 +1,7 @@
 package frontend.clang.tokens;
 
 import static frontend.clang.ClangTokenType.ERROR;
+import static frontend.clang.ClangTokenType.END_OF_LINE;
 import static frontend.clang.ClangErrorCode.INVALID_CHARACTER;
 import static frontend.clang.ClangTokenType.SPECIAL_SYMBOLS;
 
@@ -34,6 +35,12 @@ public class ClangSpecialSymbolToken extends ClangToken {
 
     text = Character.toString(firstChar);
     type = null;
+
+    if (source.atEol() || source.atEof()) {
+      type = END_OF_LINE;
+      nextChar(); // consume EOL
+      return;
+    }
 
     switch(firstChar) {
       // Single-character special symbols.
@@ -126,6 +133,7 @@ public class ClangSpecialSymbolToken extends ClangToken {
         }
         break;
       }
+
       default: {
         nextChar(); // consume bad character
         type = ERROR;

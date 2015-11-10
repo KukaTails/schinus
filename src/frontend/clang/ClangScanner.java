@@ -82,7 +82,7 @@ public class ClangScanner extends Scanner {
       throws Exception {
     char currentChar = currentChar();
 
-    while (Character.isWhitespace(currentChar) || (currentChar == '{')) {
+    while ((currentChar != '\n') && (Character.isWhitespace(currentChar) || (currentChar == '{'))) {
 
       // Start of a comment?
       if (currentChar == '{') {

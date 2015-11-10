@@ -2,17 +2,24 @@ package frontend.clang;
 
 /**
  * <h1>ClangErrorCode</h1>
- *
+ * <p>
  * <p>Error Code for errorHandler</p>
  */
 public enum ClangErrorCode {
-
+  IDENTIFIER_UNDEFINED("Undefined identifier"),     // the identifier used can not find in local symbol table
   INVALID_NUMBER("Invalid number"),                 // parse token of number and the string of number has other characters
   INVALID_CHARACTER("Invalid character"),           // invalid character when parser(unexpected token)
   RANGE_INTEGER("Integer literal out of range"),    // the value of integer literal is too big
   RANGE_REAL("Real literal out of range"),          // the value of float literal is too big
   UNEXPECTED_EOF("Unexpected end of file"),         // error happens when parse token
+  MISSING_ASSINGMENT_OPERATOR("Missing ="),         // missing assignment operator
+  // unexpected token in parser AsgnAndExpStatementParser
+  UNEXPECTED_TOKEN_IN_ASNG_AND_EXP_PARSER("Unexpected token in assignment or expression"),
+  // error on parser
+  MISSING_RIGHT_PAREN("Missing )"),                 // missing ')'
+  UNEXPECTED_TOKEN("Unexpected token"),             // unexpected token when parse
 
+  // error to exit program
   IO_ERROR(-101, "Object I/O error"),               // IO exception error when parser
   TOO_MANY_ERRORS(-102, "Too many syntax errors");  // too many errors when parser
 
@@ -21,6 +28,7 @@ public enum ClangErrorCode {
 
   /**
    * Constructor.
+   *
    * @param message the error message
    */
   ClangErrorCode(String message) {
@@ -30,7 +38,8 @@ public enum ClangErrorCode {
 
   /**
    * Constructor.
-   * @param status the exit status
+   *
+   * @param status  the exit status
    * @param message the error message
    */
   ClangErrorCode(int status, String message) {
@@ -40,6 +49,7 @@ public enum ClangErrorCode {
 
   /**
    * Getter.
+   *
    * @return the exit status
    */
   public int getStatus() {
@@ -47,7 +57,6 @@ public enum ClangErrorCode {
   }
 
   /**
-   *
    * @return the message
    */
   public String toString() {

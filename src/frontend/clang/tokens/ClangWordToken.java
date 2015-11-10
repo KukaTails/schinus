@@ -7,6 +7,11 @@ import frontend.Source;
 import frontend.clang.ClangToken;
 import frontend.clang.ClangTokenType;
 
+/**
+ * <h1>PascalWordToken</h1>
+ * <p>
+ * <p> Pascal word tokens (identifiers and reserved words).</p>
+ */
 public class ClangWordToken extends ClangToken {
   /**
    * Constructor.
@@ -39,8 +44,7 @@ public class ClangWordToken extends ClangToken {
     // Is it a reserved word or an identifier?
     // the reserved word should be lowercase,
     // if the word is uppercase, it's not a reserved word
-    type = (RESERVED_WORDS.contains(text)) ?
-        ClangTokenType.valueOf(text.toUpperCase())  // reserved word
+    type = (RESERVED_WORDS.containsKey(text)) ? RESERVED_WORDS.get(text)  // reserved word
         : IDENTIFIER;                               // identifier
   }
 }

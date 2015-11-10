@@ -1,15 +1,17 @@
 package frontend.clang;
 
-import static message.MessageType.TOKEN;
 import static message.MessageType.PARSER_SUMMARY;
-import static frontend.clang.ClangTokenType.ERROR;
 import static frontend.clang.ClangErrorCode.IO_ERROR;
 
 import frontend.Token;
-import frontend.EofToken;
-import frontend.TokenType;
 import frontend.Scanner;
 import frontend.Parser;
+import frontend.EofToken;
+import frontend.clang.parsers.AsgnAndExpStatementParser;
+import intermediate.ICode;
+import intermediate.ICodeFactory;
+import intermediate.ICodeNode;
+import intermediate.icodeimpl.ICodeImpl;
 import message.Message;
 
 import java.io.IOException;
@@ -20,6 +22,7 @@ import java.io.IOException;
  * <p>The top-down C language parser.</p>
  */
 public class ClangParserTD extends Parser {
+  private ICode statementICode = ICodeFactory.createICode();
 
   /* the error handler of c language handler */
   protected static ClangErrorHandler errorHandler = new ClangErrorHandler();
@@ -45,25 +48,21 @@ public class ClangParserTD extends Parser {
 
   @Override
   public void parse() throws Exception {
-    Token token;
     long startTime = System.currentTimeMillis();
 
     try {
-      // Loop over each token until the end of file.
-      while (!((token = nextToken()) instanceof EofToken)) {
-        TokenType tokenType = token.getType();
+      Token token = currentToken();
+      ICodeNode statementCodeNode;
 
-        if (tokenType != ERROR) {
-          // send the message about token to ParserMessageListener
-          sendMessage(new Message(TOKEN, new Object[] {token.getLineNumber(), token.getPosition(),
-              token.getType(), token.getText(), token.getValue()}));
-        } else {
-          errorHandler.flag(token, (ClangErrorCode) token.getValue(), this);
-        }
-      }
+      // parser statement again and again
+      AsgnAndExpStatementParser asgnAndExpStatementParser = new AsgnAndExpStatementParser(this);
+      statementCodeNode = asgnAndExpStatementParser.parse(token);
+      statementICode.setRoot(statementCodeNode);
+
+      // TODO // stop send message
       // Send the parser summary message.
-      float elapsedTime = (System.currentTimeMillis() - startTime) / 1000f;
-      sendMessage(new Message(PARSER_SUMMARY, new Number[] {token.getLineNumber(), getErrorCount(), elapsedTime}));
+      // float elapsedTime = (System.currentTimeMillis() - startTime) / 1000f;
+      //sendMessage(new Message(PARSER_SUMMARY, new Number[] {token.getLineNumber(), getErrorCount(), elapsedTime}));
     } catch(IOException ex) {
       errorHandler.abortTranslation(IO_ERROR, this);
     }
@@ -71,9 +70,19 @@ public class ClangParserTD extends Parser {
 
   /**
    * Return the number of syntax errors found by the parser.
+   *
    * @return the error count.
    */
   public int getErrorCount() {
     return errorHandler.getErrorCount();
+  }
+
+  /**
+   * Getter.
+   *
+   * @return icode of statement for executor
+   */
+  public ICode getStatementICode() {
+    return statementICode;
   }
 }
