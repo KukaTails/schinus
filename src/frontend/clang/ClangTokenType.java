@@ -24,11 +24,14 @@ public enum ClangTokenType implements TokenType {
   TYPEDEF, EXTERN, STATIC, AUTO, REGISTER,
 
   // control flow keyword
-  IF, ELSE, DO, WHILE, FOR, GOTO, CONTINUE, BREAK,
-  SWITCH, CASE, RETURN,
+  IF, ELIF, ELSE, DO, WHILE, FOR, GOTO, CONTINUE, BREAK,
+  SWITCH, CASE, RETURN, END,
 
   // logical operators
   LOGICAL_AND("and"), LOGICAL_OR("or"), LOGICAL_NOT("not"),
+
+  LET, // assignment
+  DEF, // function define
 
   // other keywords
   DEFAULT, SIZEOF,

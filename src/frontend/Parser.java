@@ -1,5 +1,6 @@
 package frontend;
 
+import intermediate.ICodeNode;
 import message.Message;
 import message.MessageHandler;
 import message.MessageListener;
@@ -66,7 +67,7 @@ public abstract class Parser implements MessageProducer {
    *
    * @throws Exception if an error occurred.
    */
-  public abstract void parse() throws Exception;
+  public abstract ICodeNode parse() throws Exception;
 
   /**
    * Return the number of syntax errors found by the parser.

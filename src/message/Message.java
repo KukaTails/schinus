@@ -1,25 +1,24 @@
 package message;
 
 /**
- * Created by Keen on 2015/11/6.
+ * <h1>Message</h1>
+ * <p>
+ * <p>Message format.</p>
  */
 public class Message {
   private MessageType type;
-  private Object      body;
+  private Object body;
 
-  public Message(MessageType type, Object body)
-  {
+  public Message(MessageType type, Object body) {
     this.type = type;
     this.body = body;
   }
 
-  public MessageType getType()
-  {
+  public MessageType getType() {
     return type;
   }
 
-  public Object getBody()
-  {
+  public Object getBody() {
     return body;
   }
 }

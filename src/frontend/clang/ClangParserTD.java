@@ -1,19 +1,16 @@
 package frontend.clang;
 
-import static message.MessageType.PARSER_SUMMARY;
 import static frontend.clang.ClangErrorCode.IO_ERROR;
 
-import frontend.Token;
-import frontend.Scanner;
-import frontend.Parser;
-import frontend.EofToken;
+import frontend.*;
+import frontend.TokenType;
 import frontend.clang.parsers.AsgnAndExpStatementParser;
+import frontend.clang.parsers.StatementParser;
 import intermediate.ICode;
 import intermediate.ICodeFactory;
 import intermediate.ICodeNode;
-import intermediate.icodeimpl.ICodeImpl;
-import message.Message;
 
+import java.beans.Statement;
 import java.io.IOException;
 
 /*
@@ -22,7 +19,7 @@ import java.io.IOException;
  * <p>The top-down C language parser.</p>
  */
 public class ClangParserTD extends Parser {
-  private ICode statementICode = ICodeFactory.createICode();
+  private ICode iCode = ICodeFactory.createICode();
 
   /* the error handler of c language handler */
   protected static ClangErrorHandler errorHandler = new ClangErrorHandler();
@@ -47,17 +44,21 @@ public class ClangParserTD extends Parser {
   }
 
   @Override
-  public void parse() throws Exception {
+  public ICodeNode parse() throws Exception {
     long startTime = System.currentTimeMillis();
+    ICodeNode resultNode = null;
 
     try {
       Token token = currentToken();
-      ICodeNode statementCodeNode;
+      TokenType tokenType = token.getType();
+
+      StatementParser statementParser = new StatementParser(this);
+      resultNode = statementParser.parse(token);
 
       // parser statement again and again
-      AsgnAndExpStatementParser asgnAndExpStatementParser = new AsgnAndExpStatementParser(this);
-      statementCodeNode = asgnAndExpStatementParser.parse(token);
-      statementICode.setRoot(statementCodeNode);
+      //AsgnAndExpStatementParser asgnAndExpStatementParser = new AsgnAndExpStatementParser(this);
+      //statementCodeNode = asgnAndExpStatementParser.parse(token);
+      //statementICode.setRoot(statementCodeNode);
 
       // TODO // stop send message
       // Send the parser summary message.
@@ -66,6 +67,8 @@ public class ClangParserTD extends Parser {
     } catch(IOException ex) {
       errorHandler.abortTranslation(IO_ERROR, this);
     }
+    iCode.setRoot(resultNode);
+    return resultNode;
   }
 
   /**
@@ -82,7 +85,7 @@ public class ClangParserTD extends Parser {
    *
    * @return icode of statement for executor
    */
-  public ICode getStatementICode() {
-    return statementICode;
+  public ICode getiCode() {
+    return iCode;
   }
 }
