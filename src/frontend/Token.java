@@ -1,5 +1,10 @@
 package frontend;
 
+/**
+ * <h1>Token</h1>
+ * <p>
+ * <p>base class of all the token classes.</p>
+ */
 public class Token {
   protected TokenType type;  // language-specific token type
   protected String text;     // token text
@@ -9,8 +14,6 @@ public class Token {
   protected int position;    // position of the first token character
 
   /**
-   * Constructor.
-   *
    * @param source the source from where to fetch the token's characters.
    * @throws Exception if an error occurred.
    */
@@ -23,8 +26,6 @@ public class Token {
   }
 
   /**
-   * Getter
-   *
    * @return the token type
    */
   public TokenType getType() {
@@ -32,8 +33,6 @@ public class Token {
   }
 
   /**
-   * Getter.
-   *
    * @return the token text.
    */
   public String getText() {
@@ -41,8 +40,6 @@ public class Token {
   }
 
   /**
-   * Getter.
-   *
    * @return the token value.
    */
   public Object getValue() {
@@ -50,8 +47,6 @@ public class Token {
   }
 
   /**
-   * Getter.
-   *
    * @return the source line number.
    */
   public int getLineNumber() {
@@ -59,8 +54,6 @@ public class Token {
   }
 
   /**
-   * Getter.
-   *
    * @return the position.
    */
   public int getPosition() {
@@ -83,8 +76,6 @@ public class Token {
   }
 
   /**
-   * Call the source's currentChar() method.
-   *
    * @return the current character from the source.
    * @throws Exception if an error occurred.
    */
@@ -93,8 +84,6 @@ public class Token {
   }
 
   /**
-   * Call the source's nextChar() method.
-   *
    * @return the next character from the source after moving forward.
    * @throws Exception if an error occurred.
    */
@@ -103,8 +92,6 @@ public class Token {
   }
 
   /**
-   * Call the source's peekChar() method.
-   *
    * @return the next character from the source without moving forward.
    * @throws Exception if an error occurred.
    */
