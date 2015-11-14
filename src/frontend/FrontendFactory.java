@@ -1,8 +1,5 @@
 package frontend;
 
-import frontend.clang.ClangScanner;
-import frontend.clang.ClangParserTD;
-
 /**
  * <h1>FrontendFactory</h1>
  * <p>
@@ -10,8 +7,6 @@ import frontend.clang.ClangParserTD;
  */
 public class FrontendFactory {
   /**
-   * Create a parser.
-   *
    * @param language the name of the source language.
    * @param type     the type of parser (e.g., "top-down").
    * @param source   the source object.
@@ -19,10 +14,10 @@ public class FrontendFactory {
    * @throws Exception if an error occurred.
    */
   public static Parser createParser(String language, String type, Source source) throws Exception {
-    if (language.equalsIgnoreCase("C") && type.equalsIgnoreCase("top-down")) {
-      Scanner scanner = new ClangScanner(source);
-      return new ClangParserTD(scanner);
-    } else if (!language.equalsIgnoreCase("C")) {
+    if (language.equalsIgnoreCase("schinus") && type.equalsIgnoreCase("top-down")) {
+      Scanner scanner = new Scanner(source);
+      return new Parser(scanner);
+    } else if (!language.equalsIgnoreCase("schinus")) {
       throw new Exception("Parser factory: Invalid language '" + language + "'");
     } else {
       throw new Exception("Parser factory: Invalid type '" + type + "'");
