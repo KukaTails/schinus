@@ -12,16 +12,11 @@ public class MessageHandler {
   private Message message;                        // message
   private ArrayList<MessageListener> listeners;   // listener list
 
-  /**
-   * Constructor.
-   */
   public MessageHandler() {
     this.listeners = new ArrayList<MessageListener>();
   }
 
   /**
-   * Add a listener to the listener list.
-   *
    * @param listener the listener to add.
    */
   public void addListener(MessageListener listener) {
@@ -29,8 +24,6 @@ public class MessageHandler {
   }
 
   /**
-   * Remove a listener from the listener list.
-   *
    * @param listener the listener to remove.
    */
   public void removeListener(MessageListener listener) {
