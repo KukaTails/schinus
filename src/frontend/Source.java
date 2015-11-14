@@ -7,23 +7,21 @@ import message.MessageHandler;
 import message.MessageListener;
 import message.MessageProducer;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.BufferedReader;
 
 public class Source implements MessageProducer {
-  public static final char EOL = '\n';     // end-of-line character
+  public static final char EOL = '\n';      // end-of-line character
   public static final char EOF = (char) 0;  // end-of-file character
 
-  private BufferedReader reader;           // reader for the source program
-  private String line;                     // source line
-  private int lineNum;                     // current source line number
-  private int currentPos;                  // current source line position
+  private BufferedReader reader;            // reader for the source program
+  private String line;                      // source line
+  private int lineNum;                      // current source line number
+  private int currentPos;                   // current source line position
 
-  private MessageHandler messageHandler;   // delegate to handle messages
+  private MessageHandler messageHandler;    // delegate to handle messages
 
   /**
-   * Constructor.
-   *
    * @param reader the reader for the source program
    * @throws IOException if an I/O error occurred
    */
@@ -35,8 +33,6 @@ public class Source implements MessageProducer {
   }
 
   /**
-   * Getter.
-   *
    * @return the current source line number.
    */
   public int getLineNum() {
@@ -44,8 +40,6 @@ public class Source implements MessageProducer {
   }
 
   /**
-   * Getter.
-   *
    * @return the position of the next source character in the
    * current source line.
    */
@@ -54,8 +48,6 @@ public class Source implements MessageProducer {
   }
 
   /**
-   * Return the source character at the current position.
-   *
    * @return the source character at the current position.
    * @throws Exception if an error occurred.
    */
