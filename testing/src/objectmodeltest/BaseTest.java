@@ -1,12 +1,15 @@
 package objectmodeltest;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+
+import objectmodel.baseclasses.Class;
+import objectmodel.baseclasses.Instance;
+
+import objectmodel.dictionary.Dictionary;
 
 import org.junit.Test;
-
-import java.util.Hashtable;
 
 /**
  * Test for Base class's methods
@@ -14,19 +17,19 @@ import java.util.Hashtable;
 public class BaseTest {
   // Set up the base hierarchy in the ObjVLisp model
   // the ultimate base class is OBJECT
-  private static Class OBJECT = new Class("object", null, new Hashtable<String, Object>(), null);
-  private static Class TYPE = new Class("type", OBJECT, new Hashtable<String, Object>(), null);
+  private static Class OBJECT = new Class("object", null, new Dictionary(), null, null);
+  private static Class TYPE = new Class("type", OBJECT, new Dictionary(), null, null);
   static {
     // TYPE and OBJECT is an instance of TYPE
     OBJECT.setClassName(TYPE);
     TYPE.setClassName(TYPE);
   }
 
-  private Hashtable<String, Object> aDict = new Hashtable<>();
+  private Dictionary aDict = new Dictionary();
   Class testClass;
   {
     aDict.put("a", 1);
-    testClass = new Class("A", OBJECT, aDict, TYPE);
+    testClass = new Class("A", OBJECT, aDict, TYPE, null);
   }
 
   @Test
@@ -45,9 +48,9 @@ public class BaseTest {
 
   @Test
   public void testIsInstanceOf() throws Exception {
-    Class A = new Class("A", OBJECT, new Hashtable<String, Object>(), TYPE);
-    Class B = new Class("B", A, new Hashtable<String, Object>(), TYPE);
-    Instance b = new Instance(B);
+    Class A = new Class("A", OBJECT, new Dictionary(), TYPE, null);
+    Class B = new Class("B", A, new Dictionary(), TYPE, null);
+    Instance b = new Instance(B, new Dictionary(), B.getFields());
 
     assertTrue(b.isInstanceOf(B));
     assertTrue(b.isInstanceOf(A));
@@ -57,19 +60,9 @@ public class BaseTest {
 
   @Test
   public void testCallMethod() throws Exception {
-    Method method = new Method();
-    Hashtable<String, Object> aDict = new Hashtable<>();
-
-    aDict.put("method", method);
-    Class A = new Class("A", OBJECT, aDict, TYPE);
-    Instance obj = new Instance(A);
-    obj.writeAttr("x", 1);
-    int value = (int)obj.callMethod("method", null);
-    assertEquals(obj.callMethod("method", null), 2);
   }
 
   @Test
   public void testCallMethodWithSubclassingAndArgument() throws Exception {
-
   }
 }
