@@ -44,7 +44,6 @@ public class Schinus {
 
       // get global environment
       Dictionary globalEnvironment = GlobalConstant.GLOBAL_DICT;
-      PredefinedType.initializeEnvironment(globalEnvironment);
 
       executor = new Executor();
       executor.addMessageListener(new InterpreterMessageListener());

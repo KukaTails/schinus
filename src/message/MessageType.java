@@ -12,4 +12,5 @@ public enum MessageType {
   PARSER_SUMMARY,       // message about parser summary
   RUNTIME_ERROR,        // message send by backend about runtime error
   INTERPRETER_SUMMARY,  // message send by interpreter to send message about summary message about interpreter.
+
 }
