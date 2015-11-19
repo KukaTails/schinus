@@ -27,6 +27,9 @@ public enum TokenType {
   // logical operators
   LOGICAL_AND("and"), LOGICAL_OR("or"), LOGICAL_NOT("not"),
 
+  // boolean constant
+  FALSE("False"), TRUE("True"), NONE("None"),
+
   LET,  // assignment
   DEF,  // function define
   CALL, // function call
@@ -35,7 +38,7 @@ public enum TokenType {
   DEFAULT, SIZEOF,
 
   // basic operators  // TODO FLOAT_DIV
-  ADD("+"), SUB("-"), MUL("*"), FLOAT_DIV("/"), INTEGER_DIV("//"), MOD("%"),
+  ADD("+"), SUB("-"), MUL("*"), POWER("**"), FLOAT_DIV("/"), INTEGER_DIV("//"), MOD("%"),
   ADD_ASSIGN("+="), SUB_ASSIGN("-="), MUL_ASSIGN("*="), DIV_ASSIGN("/="), MOD_ASSIGN("%="),
 
   // relational operators
