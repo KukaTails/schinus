@@ -6,8 +6,7 @@ import intermediate.ICodeNode;
 import frontend.tokens.EofToken;
 import frontend.FrontendFactory;
 import objectmodel.dictionary.Dictionary;
-import objectmodel.predefined.GlobalConstant;
-import objectmodel.predefined.PredefinedType;
+import objectmodel.predefined.PredefinedConstant;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
@@ -43,7 +42,7 @@ public class Schinus {
       parser.addMessageListener(new ParserMessageListener());
 
       // get global environment
-      Dictionary globalEnvironment = GlobalConstant.GLOBAL_DICT;
+      Dictionary globalEnvironment = PredefinedConstant.GLOBAL_DICT;
 
       executor = new Executor();
       executor.addMessageListener(new InterpreterMessageListener());
