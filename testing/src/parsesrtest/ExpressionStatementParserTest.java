@@ -117,7 +117,16 @@ public class ExpressionStatementParserTest {
     MethodTest(testCases, "parseOrTest");
   }
 
+  @Test
+  public void parseAssignExp() throws Exception {
+    String[] testCases = {
+        "a = 1", "a", "a = \'string\'", "a", "b = 2", "b",
+        "c = False", "c", "d = 1.1245", "d", "f = 12", "f",
+        "g = \'g\'", "g", "h = 12 + 124", "h", "i = 1 and 2 and 3", "i"
+    };
 
+    MethodTest(testCases, "parse");
+  }
 
 
   private void MethodTest(String[] testCases, String methodName) throws Exception {
