@@ -8,7 +8,7 @@ import frontend.parsers.ExprStmtParser;
 
 import intermediate.ICodeNode;
 import objectmodel.dictionary.Dictionary;
-import interpreter.executors.ExpressionStatementExecutor;
+import interpreter.executors.ExprStmtExecutor;
 
 import util.ObjectPrinter;
 import objectmodel.predefined.PredefinedConstant;
@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  */
 public class ExpStmtParserTest {
   private Dictionary GLOBAL_ENV = PredefinedConstant.GLOBAL_DICT;
-  private ExpressionStatementExecutor executor = new ExpressionStatementExecutor();
+  private ExprStmtExecutor executor = new ExprStmtExecutor();
   private Class expParserClass = ExprStmtParser.class;
 
   Source source;

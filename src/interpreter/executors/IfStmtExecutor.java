@@ -23,7 +23,7 @@ public class IfStmtExecutor extends StmtExecutor {
    * @return the result of execute if statement
    */
   public Object execute(ICodeNode iCodeNode, Dictionary environment) {
-    ExpressionStatementExecutor expressionStatementExecutor = new ExpressionStatementExecutor();
+    ExprStmtExecutor expressionStatementExecutor = new ExprStmtExecutor();
     StmtExecutor statementExecutor = new StmtExecutor();
     ArrayList<ICodeNode> branches = iCodeNode.getChildren();
     Object executeResult = NONE;
