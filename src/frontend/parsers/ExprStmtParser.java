@@ -22,11 +22,11 @@ import java.util.HashMap;
  * <p>
  * <p>Parse a Clang expression.</p>
  */
-public class ExpressionStatementParser extends StatementParser {
+public class ExprStmtParser extends StatementParser {
   /**
    * @param parent the parent parser.
    */
-  public ExpressionStatementParser(Parser parent) {
+  public ExprStmtParser(Parser parent) {
     super(parent);
   }
 
