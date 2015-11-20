@@ -95,6 +95,30 @@ public class ExpressionStatementParserTest {
     MethodTest(testCases, "parseNotTest");
   }
 
+  @Test
+  public void parseAndTest() throws Exception {
+    String[] testCases = {
+        "1 and 2", "1 and 0", "1.0 and 2.0", "0.4 and 0.0",
+        "\'string\' and \'test\'",
+        "True and True", "False and True", "True and False",
+    };
+
+    MethodTest(testCases, "parseAndTest");
+  }
+
+  @Test
+  public void parseOrTest() throws Exception {
+    String[] testCases = {
+        "false or 1", "false or true", "false or \'sting\'",
+        "0 or 1", "0 or 0.0", "0.0 or 1.0", "0.0 or 1", "1.3 or 8.9",
+        "\'string\' or \'student\'"
+    };
+
+    MethodTest(testCases, "parseOrTest");
+  }
+
+
+
 
   private void MethodTest(String[] testCases, String methodName) throws Exception {
     for (String testCase : testCases) {
