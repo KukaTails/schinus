@@ -3,6 +3,7 @@ package interpreter.executors;
 import static objectmodel.predefined.PredefinedConstant.NONE;
 
 import intermediate.ICodeNode;
+import objectmodel.baseclasses.Instance;
 import objectmodel.dictionary.Dictionary;
 
 import java.util.ArrayList;
@@ -56,14 +57,16 @@ public class IfStatementExecutor extends StatementExecutor {
    * @return if the condition result if true or false
    */
   private boolean checkConditionResult(Object conditionResult) {
-    if (conditionResult == null)
-      return false; // TODO may be modify
-    else if (conditionResult instanceof Boolean) {
+    if (conditionResult instanceof Instance) {
+      conditionResult = ((Instance) conditionResult).readAttribute("__value__");
+    }
+
+    if (conditionResult instanceof Boolean) {
       return (Boolean) conditionResult;
     } else if (conditionResult instanceof Integer) {
-      return ((Integer) conditionResult) == 0 ? false : true;
+      return ((Integer) conditionResult) != 0;
     } else if (conditionResult instanceof Float) {
-      return ((Float) conditionResult) == 0.0 ? false : true;
+      return ((Float) conditionResult) != 0.0;
     } else {
       return true;
     }
