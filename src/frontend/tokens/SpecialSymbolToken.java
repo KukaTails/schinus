@@ -101,7 +101,7 @@ public class SpecialSymbolToken extends Token {
           }
         }
         // symbol "++"
-        else if ((firstChar == '+') && (secondChar == '+')) {
+        /*else if ((firstChar == '+') && (secondChar == '+')) {
           text += secondChar;
           nextChar(); // consume '+'
         }
@@ -109,7 +109,7 @@ public class SpecialSymbolToken extends Token {
         else if ((firstChar == '-') && (secondChar == '-' || secondChar == '>')) {
           text += secondChar;
           nextChar(); // consume '-' or '>'
-        }
+        }*/
         // symbol "&&"
         else if ((firstChar == '&') && (secondChar == '&')) {
           text += secondChar;

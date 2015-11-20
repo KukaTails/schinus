@@ -61,7 +61,7 @@ public enum TokenType {
   CONDITION("?"),
 
   // other operators
-  ASSIGN("="), INC_OP("++"), DEC_OP("--"), PTR_OP("->"), DOT("."),
+  ASSIGN("="), DOT("."),
   ELLIPSIS("..."),
 
   // other symbols
