@@ -433,9 +433,9 @@ public class ExpressionStatementParser extends StatementParser {
         rootNode = ICodeFactory.createICodeNode(BOOLEAN_CONSTANT_OPERAND);
 
         if (token.getType() == TRUE) {
-          rootNode.setAttribute(VALUE, "True");
+          rootNode.setAttribute(VALUE, true);
         } else {
-          rootNode.setAttribute(VALUE, "False");
+          rootNode.setAttribute(VALUE, false);
         }
         break;
       }
