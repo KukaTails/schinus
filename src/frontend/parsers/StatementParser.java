@@ -67,6 +67,11 @@ public class StatementParser extends Parser {
         break;
       }
 
+      case CLASS: {
+        ClassDefStmtParser classDefStmtParser = new ClassDefStmtParser(this);
+        statementNode = classDefStmtParser.parse(token);
+        break;
+      }
       default: {
         ExprStmtParser expressionParser = new ExprStmtParser(this);
         statementNode = expressionParser.parse(token);
