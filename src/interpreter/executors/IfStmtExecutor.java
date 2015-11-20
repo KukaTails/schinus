@@ -13,8 +13,8 @@ import java.util.ArrayList;
  * <p>
  * <p>If statement executor.</p>
  */
-public class IfStatementExecutor extends StatementExecutor {
-  public IfStatementExecutor() {
+public class IfStmtExecutor extends StmtExecutor {
+  public IfStmtExecutor() {
   }
 
   /**
@@ -24,7 +24,7 @@ public class IfStatementExecutor extends StatementExecutor {
    */
   public Object execute(ICodeNode iCodeNode, Dictionary environment) {
     ExpressionStatementExecutor expressionStatementExecutor = new ExpressionStatementExecutor();
-    StatementExecutor statementExecutor = new StatementExecutor();
+    StmtExecutor statementExecutor = new StmtExecutor();
     ArrayList<ICodeNode> branches = iCodeNode.getChildren();
     Object executeResult = NONE;
 
