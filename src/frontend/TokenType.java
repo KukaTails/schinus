@@ -30,9 +30,10 @@ public enum TokenType {
   // boolean constant
   FALSE("False"), TRUE("True"), NONE("None"),
 
-  LET,  // assignment
-  DEF,  // function define
-  CALL, // function call
+  LET,   // assignment
+  DEF,   // function define
+  CALL,  // function call
+  CLASS, // class define
 
   // other keywords
   DEFAULT, SIZEOF,
