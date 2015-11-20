@@ -68,6 +68,13 @@ public class ExpressionStatementParserTest {
     MethodTest(testCases, "parseTerm");
   }
 
+  @Test
+  public void parseArithExprTest() throws Exception {
+    String[] testCases = {"-90 + 39.98", "-983 - 839"};
+
+    MethodTest(testCases, "parseArithExpression");
+  }
+
 
   @Test
   public void parseComparsion() throws Exception {
