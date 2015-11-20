@@ -37,14 +37,14 @@ public enum TokenType {
   // other keywords
   DEFAULT, SIZEOF,
 
-  // basic operators  // TODO FLOAT_DIV
+  // basic operators
   ADD("+"), SUB("-"), MUL("*"), POWER("**"), FLOAT_DIV("/"), INTEGER_DIV("//"), MOD("%"),
   ADD_ASSIGN("+="), SUB_ASSIGN("-="), MUL_ASSIGN("*="), DIV_ASSIGN("/="), MOD_ASSIGN("%="),
 
   // relational operators
   GREAT_THAN(">"), LESS_THAN("<"),
   GREAT_EQUAL(">="), LESS_EQUAL("<="),
-  EQUAL("=="), NOT_EQUAL("!="),
+  EQUAL("=="), NOT("!"), NOT_EQUAL("!="),
 
   // bit operators
   BIT_AND("&"), BIT_XOR("^"), BIT_OR("|"), BIT_NOT("~"),

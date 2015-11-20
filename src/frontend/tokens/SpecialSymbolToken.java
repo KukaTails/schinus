@@ -100,16 +100,11 @@ public class SpecialSymbolToken extends Token {
             nextChar();  // consume '='
           }
         }
-        // symbol "++"
-        /*else if ((firstChar == '+') && (secondChar == '+')) {
+        // symbol "//"
+        else if ((firstChar == '/') && (secondChar == '/')) {
           text += secondChar;
-          nextChar(); // consume '+'
+          nextChar();
         }
-        // symbol "--"
-        else if ((firstChar == '-') && (secondChar == '-' || secondChar == '>')) {
-          text += secondChar;
-          nextChar(); // consume '-' or '>'
-        }*/
         // symbol "&&"
         else if ((firstChar == '&') && (secondChar == '&')) {
           text += secondChar;
