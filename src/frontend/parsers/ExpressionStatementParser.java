@@ -13,10 +13,6 @@ import frontend.TokenType;
 import intermediate.ICodeNode;
 import intermediate.ICodeFactory;
 import intermediate.ICodeNodeType;
-import objectmodel.baseclasses.Instance;
-import objectmodel.dictionary.Dictionary;
-import objectmodel.predefined.PredefinedConstant;
-import objectmodel.predefined.PredefinedType;
 
 import java.util.EnumSet;
 import java.util.HashMap;
