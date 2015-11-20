@@ -502,7 +502,7 @@ public class ExprStmtParser extends StatementParser {
 
     arguListNode.addChild(parseArgument(token));
     while ((token = currentToken()).getType() == COMMA) {
-      nextToken();  // consume COMMA
+      token = nextToken();  // consume COMMA
       arguListNode.addChild(parseArgument(token));
     }
     return arguListNode;
