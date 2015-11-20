@@ -1,0 +1,9 @@
+if 2 > 1
+  a = 1
+elif 2 == 1
+  a = 2
+elif 2 == 2
+  a = 3
+elif 2 < 3
+  a = 4
+end
