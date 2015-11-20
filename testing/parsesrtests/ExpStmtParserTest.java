@@ -1,10 +1,10 @@
-package parsesrtest;
+package parsesrtests;
 
 import frontend.Token;
 import frontend.Source;
 import frontend.Parser;
 import frontend.FrontendFactory;
-import frontend.parsers.ExpressionStatementParser;
+import frontend.parsers.ExprStmtParser;
 
 import intermediate.ICodeNode;
 import objectmodel.dictionary.Dictionary;
@@ -27,11 +27,11 @@ import java.lang.reflect.Method;
 public class ExpStmtParserTest {
   private Dictionary GLOBAL_ENV = PredefinedConstant.GLOBAL_DICT;
   private ExpressionStatementExecutor executor = new ExpressionStatementExecutor();
-  private Class expParserClass = ExpressionStatementParser.class;
+  private Class expParserClass = ExprStmtParser.class;
 
   Source source;
   Parser parser;
-  ExpressionStatementParser expressionParser;
+  ExprStmtParser expressionParser;
 
   @Test
   public void AtomParseTest() throws Exception {
@@ -145,7 +145,7 @@ public class ExpStmtParserTest {
   private Method initParse(String testCase, String methodName) throws Exception {
     source = new Source(new BufferedReader(new StringReader(testCase)));
     parser = FrontendFactory.createParser("Schinus", "top-down", source);
-    expressionParser = new ExpressionStatementParser(parser);
+    expressionParser = new ExprStmtParser(parser);
 
     return setMethodPublic(methodName);
   }
