@@ -77,7 +77,7 @@ public class ExpressionStatementParserTest {
 
 
   @Test
-  public void parseComparsion() throws Exception {
+  public void parseComparsionTest() throws Exception {
     String[] testCases = {
         "2 != 2", "1 > 2", "2 < 3" ,
         "10.5 >= 10.5", "10 >= 10.65",
@@ -87,6 +87,14 @@ public class ExpressionStatementParserTest {
 
     MethodTest(testCases, "parseComparisonExpression");
   }
+
+  @Test
+  public void parseNotTest() throws Exception {
+    String[] testCases = {"not False", "not True", "not 1", "not 1.1", "not 0", "not 0.0"};
+
+    MethodTest(testCases, "parseNotTest");
+  }
+
 
   private void MethodTest(String[] testCases, String methodName) throws Exception {
     for (String testCase : testCases) {
