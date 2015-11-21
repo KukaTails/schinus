@@ -79,6 +79,12 @@ public class StmtExecutor extends Executor {
           break;
         }
 
+        case CLASS_DEFINE_STATEMENT: {
+          ClassDefStmtExecutor classDefStmtExecutor = new ClassDefStmtExecutor();
+          result = classDefStmtExecutor.execute(node, environment);
+          break;
+        }
+
         case RETURN_STATEMENT: {
           ReturnStmtExecutor returnStatementExecutor = new ReturnStmtExecutor();
           result = returnStatementExecutor.execute(node, environment);
@@ -94,7 +100,6 @@ public class StmtExecutor extends Executor {
         case EMPTY_STATEMENT: {
           return null;
         }
-
 
         default: {
           errorHandler.flag(node, UNIMPLEMENTED_FEATURE, this);
