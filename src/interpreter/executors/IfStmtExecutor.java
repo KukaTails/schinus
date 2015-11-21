@@ -1,8 +1,10 @@
 package interpreter.executors;
 
+import static intermediate.ICodeNodeType.ELSE_BRANCH;
 import static objectmodel.predefined.PredefinedConstant.NONE;
 
 import intermediate.ICodeNode;
+import intermediate.ICodeNodeType;
 import objectmodel.baseclasses.Instance;
 import objectmodel.dictionary.Dictionary;
 
@@ -31,13 +33,26 @@ public class IfStmtExecutor extends StmtExecutor {
     // execute all branches of if statement
     for (ICodeNode branch : branches) {
       ArrayList<ICodeNode> children = branch.getChildren();
-      ICodeNode conditionExpression = children.get(0);
-      ICodeNode bodyNode = children.get(1);
+      ICodeNodeType nodeType = branch.getType();
+      ICodeNode conditionExpression = null;
+      ICodeNode bodyNode = null;
+
+      if (nodeType != ELSE_BRANCH) {
+        conditionExpression = children.get(0);
+        bodyNode = children.get(1);
+      } else {
+        bodyNode = children.get(0);
+      }
 
       // execute condition expression of branches
       try {
-        Object conditionResult = expressionStatementExecutor.execute(conditionExpression, environment);
-        boolean result = checkConditionResult(conditionResult);
+        Object conditionResult;
+        boolean result = true;
+
+        if (nodeType != ELSE_BRANCH) {
+          conditionResult = expressionStatementExecutor.execute(conditionExpression, environment);
+          result = checkConditionResult(conditionResult);
+        }
         // execute one statement of branches or no statement
         if (result) {
           executeResult = statementExecutor.execute(bodyNode, environment);
