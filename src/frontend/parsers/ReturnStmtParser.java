@@ -1,10 +1,14 @@
 package frontend.parsers;
 
 import static frontend.TokenType.END;
+import static frontend.TokenType.END_OF_LINE;
+import static frontend.TokenType.RETURN;
+import static intermediate.ICodeNodeType.EXPRESSION_NODE;
 import static intermediate.ICodeNodeType.RETURN_STATEMENT;
 
 import frontend.Token;
 import frontend.Parser;
+import intermediate.ICode;
 import intermediate.ICodeNode;
 import intermediate.ICodeFactory;
 
@@ -30,16 +34,13 @@ public class ReturnStmtParser extends StatementParser {
   public ICodeNode parse(Token token) throws Exception {
     ICodeNode iCodeNode = ICodeFactory.createICodeNode(RETURN_STATEMENT);
 
-    token = nextToken();  // consume return
-
+    token = match(RETURN);  // consume return
     // parse expression
     ExprStmtParser exprParser = new ExprStmtParser(this);
-    ICodeNode expressionNode = exprParser.parseTest(token);
-    iCodeNode.addChild(expressionNode);
+    ICodeNode exprNode = exprParser.parseExpr(token);
 
-    if (currentToken().getType() == END) {
-      nextToken();  // consume END
-    }
+    iCodeNode.addChild(exprNode);
+    match(END_OF_LINE);
     return iCodeNode;
   }
 }
