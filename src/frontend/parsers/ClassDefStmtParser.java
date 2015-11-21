@@ -50,15 +50,16 @@ public class ClassDefStmtParser extends StatementParser {
           break;
         token = nextToken(); // consume COMMA
       }
-      token = nextToken();  // consume right paren
+      nextToken();  // consume right paren
     }
     arglistNode.setAttribute(BASE_CLASSES_NAME, baseClasses);
     iCodeNode.addChild(arglistNode);
 
+    token = nextToken();  // consume :
     token = nextToken();  // consume EOL
     ICodeNode classBodyNode = ICodeFactory.createICodeNode(CLASS_DEFINE_BODY);
     StatementParser statementParser = new StatementParser(this);
-    while (currentToken().getType() != END) {
+    while ((token = currentToken()).getType() != END) {
       ICodeNode stmtNode = statementParser.parse(token);
       if (stmtNode.getType() != EMPTY_STATEMENT) {
         classBodyNode.addChild(stmtNode);
@@ -66,6 +67,7 @@ public class ClassDefStmtParser extends StatementParser {
     }
     iCodeNode.addChild(classBodyNode);
 
+    nextToken();  // consume END
     return iCodeNode;
   }
 }
