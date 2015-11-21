@@ -10,10 +10,8 @@ import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 import interpreter.Executor;
 import intermediate.ICodeNode;
 import intermediate.ICodeNodeType;
-import objectmodel.baseclasses.Base;
+import objectmodel.baseclasses.*;
 import objectmodel.baseclasses.Class;
-import objectmodel.baseclasses.Instance;
-import objectmodel.baseclasses.MethodInstance;
 import objectmodel.dictionary.Dictionary;
 import interpreter.exception.NotCallableException;
 
@@ -403,7 +401,8 @@ public class ExprStmtExecutor extends Executor {
       switch(nodeType) {
         case ARGUMENTS_TRAILER: {
           // object is not callable
-          if (!(currentObject instanceof MethodInstance || currentObject instanceof Class)) {
+          if (!(currentObject instanceof MethodInstance ||
+              currentObject instanceof Class || currentObject instanceof PredefinedFuncInstance)) {
             errorHandler.flag(child, CALL_UNCALLABLE_OBJECT, this);
             throw new NotCallableException();
           }
@@ -414,7 +413,13 @@ public class ExprStmtExecutor extends Executor {
             ArrayList<Object> arguments = executeArguList(argumentsNode, environment);
             currentObject = method.callMethod(arguments);
             currentEnv = ((Base) currentObject).getFields();
-          } else {
+          } else if (currentObject instanceof PredefinedFuncInstance) {
+            PredefinedFuncInstance method = (PredefinedFuncInstance)currentObject;
+            ICodeNode argumentsNode = child.getChildren().get(0);
+            ArrayList<Object> arguments = executeArguList(argumentsNode, environment);
+            currentObject = method.callMethod(arguments);
+            currentEnv = ((Base)currentObject).getFields();
+          } else{
             Class cls = (Class)currentObject;
             currentObject = new Instance(cls, new Dictionary(), cls.getFields(), currentEnv);
             currentEnv = ((Instance) currentObject).getFields();
@@ -465,7 +470,7 @@ public class ExprStmtExecutor extends Executor {
     switch(nodeType) {
       case IDENTIFIER_OPERAND: {
         String identifierName = (String)node.getAttribute(IDENTIFIER_NAME);
-        Object identifier = environment.get(identifierName);
+        Object identifier = environment.readField(identifierName);
 
         if (identifier == null) {
           identifier = new Instance(TMPTYPE, new Dictionary(), environment, environment);
