@@ -2,7 +2,7 @@ package interpreter.executors;
 
 import static intermediate.ICodeKey.LINE;
 import static message.MessageType.SOURCE_LINE;
-import static objectmodel.predefined.PredefinedConstant.NONE;
+import static intermediate.ICodeNodeType.RETURN_STATEMENT;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 import static interpreter.RuntimeErrorCode.UNIMPLEMENTED_FEATURE;
 
@@ -10,7 +10,6 @@ import message.Message;
 import interpreter.Executor;
 import intermediate.ICodeNode;
 import intermediate.ICodeNodeType;
-import interpreter.ExecuteResultPrinter;
 import objectmodel.dictionary.Dictionary;
 
 import java.util.ArrayList;
@@ -64,6 +63,8 @@ public class StmtExecutor extends Executor {
 
           for (ICodeNode statement : statements) {
             result = statementExecutor.execute(statement, environment);
+            if (statement.getType() == RETURN_STATEMENT)
+              break;
           }
           break;
         }
