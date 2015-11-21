@@ -1,6 +1,9 @@
 package frontend.parsers;
 
+import static frontend.TokenType.DEF;
 import static frontend.TokenType.END;
+import static frontend.TokenType.IDENTIFIER;
+import static frontend.TokenType.END_OF_LINE;
 import static intermediate.ICodeKey.FUNCTION_NAME_KEY;
 import static intermediate.ICodeNodeType.FUNCTION_NAME;
 import static intermediate.ICodeNodeType.FUNCTION_BODY;
@@ -14,7 +17,7 @@ import intermediate.ICodeFactory;
 
 /**
  * <h1>FuncDefStmtParser</h1>
- *
+ * <p>
  * <p>Function define statement parser.</p>
  */
 public class FuncDefStmtParser extends StatementParser {
@@ -27,12 +30,12 @@ public class FuncDefStmtParser extends StatementParser {
    * @return intermediate code node of function define statement.
    * @throws Exception if an error occurred.
    */
+  @Override
   public ICodeNode parse(Token token) throws Exception {
     ICodeNode functionDefineNode = ICodeFactory.createICodeNode(FUNCTION_DEFINE_STATEMENT);
 
-    token = nextToken(); // consume "def"
+    token = match(DEF); // consume "def"
 
-    //VariableParser variableParser = new VariableParser(this);
     ICodeNode functionNameNode = ICodeFactory.createICodeNode(FUNCTION_NAME);
     // parse the name of function
     String functionName = token.getText();
@@ -40,33 +43,27 @@ public class FuncDefStmtParser extends StatementParser {
     functionDefineNode.addChild(functionNameNode);
 
     // parse parameter list
-    token = nextToken(); // consume the name of token
+    token = match(IDENTIFIER);  // consume the name of token
     ParametersParser parameterListParser = new ParametersParser(this);
     ICodeNode functionParameters = parameterListParser.parse(token);
     functionDefineNode.addChild(functionParameters);
 
-    token = nextToken(); // consume ':'
-    token = nextToken(); // consume '\n'
+    match(END_OF_LINE);  // consume '\n'
 
     ICodeNode functionBodyNode = ICodeFactory.createICodeNode(FUNCTION_BODY);
     StatementParser statementParser = new StatementParser(this);
 
     // parse function body
-    token = currentToken();
-    while (token.getType() != END) {
+    while ((token = currentToken()).getType() != END) {
       ICodeNode statement = statementParser.parse(token);
       if (statement.getType() != EMPTY_STATEMENT) {
         functionBodyNode.addChild(statement);
       }
-      token = currentToken();
     }
     functionDefineNode.addChild(functionBodyNode);
 
-    if (token.getType() == END) {
-      nextToken(); // consume END
-      nextToken(); // consume END_OF_LINE
-      return functionDefineNode;
-    }
-    return null;
+    match(END);
+    match(END_OF_LINE);
+    return functionDefineNode;
   }
 }
