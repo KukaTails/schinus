@@ -1,5 +1,7 @@
 package interpreter.executors;
 
+import static objectmodel.predefined.PredefinedConstant.NONE;
+
 import intermediate.ICodeNode;
 import objectmodel.dictionary.Dictionary;
 
@@ -14,9 +16,14 @@ public class ReturnStmtExecutor extends StmtExecutor {
    * @return the result of executing return statement.
    */
   public Object execute(ICodeNode iCodeNode, Dictionary environment) {
-    ICodeNode expressionNode = iCodeNode.getChildren().get(0);
-    StmtExecutor statementExecutor = new StmtExecutor();
+    try {
 
-    return statementExecutor.execute(expressionNode, environment);
+      ICodeNode expressionNode = iCodeNode.getChildren().get(0);
+      ExprStmtExecutor exprStmtExecutor = new ExprStmtExecutor();
+
+      return exprStmtExecutor.execute(expressionNode, environment);
+    }catch (Exception e) {
+      return NONE;
+    }
   }
 }
