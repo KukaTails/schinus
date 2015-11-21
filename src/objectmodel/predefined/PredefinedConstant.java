@@ -4,6 +4,7 @@ import static objectmodel.predefined.PredefinedType.BOOLEAN;
 import static objectmodel.predefined.PredefinedType.OBJECT;
 
 import objectmodel.baseclasses.Instance;
+import objectmodel.baseclasses.PredefinedFuncInstance;
 import objectmodel.dictionary.Dictionary;
 
 public class PredefinedConstant {
@@ -23,6 +24,7 @@ public class PredefinedConstant {
   static {
     PredefinedType.initializeEnvironment(GLOBAL_DICT);
     PredefinedConstant.initializeEnvironment(GLOBAL_DICT);
+    PredefinedFunction.initializeEnvironment(GLOBAL_DICT);
   }
 
   public static void initializeEnvironment(Dictionary environment) {
