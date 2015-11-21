@@ -6,7 +6,9 @@ import static frontend.TokenType.ELIF;
 import static frontend.TokenType.ELSE;
 import static frontend.TokenType.END_OF_LINE;
 import static intermediate.ICodeNodeType.IF_STATEMENT;
-import static intermediate.ICodeNodeType.SELECTION_BRANCH;
+import static intermediate.ICodeNodeType.IF_BRANCH;
+import static intermediate.ICodeNodeType.ELIF_BRANCH;
+import static intermediate.ICodeNodeType.ELSE_BRANCH;
 import static intermediate.ICodeNodeType.COMPOUND_STATEMENT;
 
 import frontend.Token;
@@ -36,12 +38,12 @@ public class IfStmtParser extends StatementParser {
 
     token = match(IF); // consume "if"
 
-    ICodeNode ifBranchNode = ICodeFactory.createICodeNode(SELECTION_BRANCH);
+    ICodeNode ifBranchNode = ICodeFactory.createICodeNode(IF_BRANCH);
     ICodeNode ifExpressionNode = expressionParser.parseExpr(token);
     ICodeNode ifCompoundStatement = ICodeFactory.createICodeNode(COMPOUND_STATEMENT);
 
     ifBranchNode.addChild(ifExpressionNode);
-    token = currentToken();
+    token = match(END_OF_LINE);
     // parse the statements after <if expression EOL>
     while (token.getType() != ELIF && token.getType() != ELSE && token.getType() != END) {
       ICodeNode statementNode = statementParser.parse(token);
@@ -53,14 +55,15 @@ public class IfStmtParser extends StatementParser {
 
     token = currentToken();
     while (token.getType() != ELSE && token.getType() != END) {
-      ICodeNode elifBranchNode = ICodeFactory.createICodeNode(SELECTION_BRANCH);
+      ICodeNode elifBranchNode = ICodeFactory.createICodeNode(ELIF_BRANCH);
       ICodeNode elifCompoundStatement = ICodeFactory.createICodeNode(COMPOUND_STATEMENT);
 
       token = match(ELIF); // consume "elif"
       ICodeNode elifExpressionNode = expressionParser.parseExpr(token);
       elifBranchNode.addChild(elifExpressionNode);
       // parse elif compound statements
-      token = currentToken();
+      token = match(END_OF_LINE);  // consume end of line
+
       while (token.getType() != ELIF && token.getType() != ELSE && token.getType() != END) {
         ICodeNode statementNode = statementParser.parse(token);
         elifCompoundStatement.addChild(statementNode);
@@ -73,7 +76,7 @@ public class IfStmtParser extends StatementParser {
 
     token = currentToken();
     if (token.getType() != END) {
-      ICodeNode elseBranchNode = ICodeFactory.createICodeNode(SELECTION_BRANCH);
+      ICodeNode elseBranchNode = ICodeFactory.createICodeNode(ELSE_BRANCH);
       ICodeNode elseCompoundStatementNode = ICodeFactory.createICodeNode(COMPOUND_STATEMENT);
 
       match(ELSE);         // consume "else"
@@ -85,6 +88,7 @@ public class IfStmtParser extends StatementParser {
         elseCompoundStatementNode.addChild(statementNode);
       }
       elseBranchNode.addChild(elseCompoundStatementNode);
+      ifStatementNode.addChild(elseBranchNode);
     }
 
     match(END);
