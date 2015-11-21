@@ -12,8 +12,9 @@ public class Base {
    * If the object is a instance in object model, the className should be the class of instance.
    * If the object is a class in object model, the className should be the metaclass of class.
    */
-  private Class className;   // all objects is an instance of class
-  private Dictionary fields; // both class and instance has a dict
+  private Class className;        // all objects is an instance of class
+  private Dictionary fields;      // both class and instance has a dict
+  private Dictionary existedEnv;  // environment which contains the object
 
   /**
    * initialize the object's fields and class
@@ -21,10 +22,11 @@ public class Base {
    * @param className the class of the instance or the metaclass of class
    * @param fields    the field of class or instance
    */
-  public Base(Class className, Dictionary fields, Dictionary parentDict) {
+  public Base(Class className, Dictionary fields, Dictionary parentDict, Dictionary existedEnv) {
     this.className = className;
     this.fields = fields;
     this.fields.setParentDictionary(parentDict);
+    this.existedEnv = existedEnv;
   }
 
   /**
@@ -46,6 +48,17 @@ public class Base {
    */
   public Dictionary getFields() {
     return fields;
+  }
+
+  /**
+   * @return the environment which contains the object.
+   */
+  public Dictionary getExistedEnv() {
+    return existedEnv;
+  }
+
+  public void setExistedEnv(Dictionary existedEnv) {
+    this.existedEnv = existedEnv;
   }
 
   /**
