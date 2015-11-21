@@ -9,10 +9,10 @@ import objectmodel.dictionary.Dictionary;
 public class PredefinedConstant {
   public static Dictionary GLOBAL_DICT = new Dictionary();
 
-  public static Instance NONE = new Instance(OBJECT, new Dictionary(), GLOBAL_DICT);
-  public static Instance NO_PRINT = new Instance(OBJECT, new Dictionary(), GLOBAL_DICT);
-  public static Instance TRUE = new Instance(BOOLEAN, new Dictionary(), GLOBAL_DICT);
-  public static Instance FALSE = new Instance(BOOLEAN, new Dictionary(), GLOBAL_DICT);
+  public static Instance NONE = new Instance(OBJECT, new Dictionary(), GLOBAL_DICT, GLOBAL_DICT);
+  public static Instance NO_PRINT = new Instance(OBJECT, new Dictionary(), GLOBAL_DICT, GLOBAL_DICT);
+  public static Instance TRUE = new Instance(BOOLEAN, new Dictionary(), GLOBAL_DICT, GLOBAL_DICT);
+  public static Instance FALSE = new Instance(BOOLEAN, new Dictionary(), GLOBAL_DICT, GLOBAL_DICT);
 
   static {
     NONE.writeAttr("__value__", "None");

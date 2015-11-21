@@ -24,8 +24,8 @@ public class Class extends Base {
    * @param metaClass the meta class of the class
    */
   public Class(String name, Class baseClass, Dictionary fields, Class metaClass,
-               Dictionary parentDict) {
-    super(metaClass, fields, parentDict);
+               Dictionary parentDict, Dictionary existedEnv) {
+    super(metaClass, fields, parentDict, existedEnv);
     this.name = name;
     this.baseClass = baseClass;
   }

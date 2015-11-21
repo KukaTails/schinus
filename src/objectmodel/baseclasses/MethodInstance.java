@@ -21,15 +21,17 @@ public class MethodInstance extends Instance {
   ICodeNode funcBodyCode;                   // the intermediate code node of function body
 
   /**
-   * @param methodName       the name of method
-   * @param parentDictionary the parent dictionary of method
-   * @param parameterCount   the number of parameters
-   * @param parametersName   the names of parameters
-   * @param funcBodyCode     the intermediate code node of function body
+   * @param methodName the name of method.
+   * @param parentDictionary the parent of method.
+   * @param existedEnv the environment which contains the object.
+   * @param parameterCount the number of parameters of the method.
+   * @param parametersName the name of parameters.
+   * @param funcBodyCode the intermediate code node of method.
    */
-  public MethodInstance(String methodName, Dictionary parentDictionary, int parameterCount, ArrayList<String> parametersName, ICodeNode funcBodyCode) {
+  public MethodInstance(String methodName, Dictionary parentDictionary,
+                        Dictionary existedEnv, int parameterCount, ArrayList<String> parametersName, ICodeNode funcBodyCode) {
     // all methods are instance of function
-    super(FUNCTION, new Dictionary(), parentDictionary);
+    super(FUNCTION, new Dictionary(), parentDictionary, existedEnv);
     this.methodName = methodName;
     this.parameterCount = parameterCount;
     this.funcBodyCode = funcBodyCode;

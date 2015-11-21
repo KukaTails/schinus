@@ -15,7 +15,8 @@ public class Instance extends Base {
    *
    * @param className a instance of class
    */
-  public Instance(objectmodel.baseclasses.Class className, Dictionary fields, Dictionary parentDictionary) {
-    super(className, fields, parentDictionary);
+  public Instance(objectmodel.baseclasses.Class className, Dictionary fields,
+                  Dictionary parentDictionary, Dictionary existedEnv) {
+    super(className, fields, parentDictionary, existedEnv);
   }
 }
