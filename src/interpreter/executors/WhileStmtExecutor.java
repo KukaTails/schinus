@@ -1,6 +1,10 @@
 package interpreter.executors;
 
+import static intermediate.ICodeNodeType.RETURN_STATEMENT;
+import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
+
 import intermediate.ICodeNode;
+import intermediate.ICodeNodeType;
 import objectmodel.baseclasses.Instance;
 import objectmodel.dictionary.Dictionary;
 
@@ -47,13 +51,16 @@ public class WhileStmtExecutor extends StmtExecutor {
    * @param compoundNode intermediate code node of compound statement.
    * @param environment environment to execute compound statement.
    */
-  private void executeCompoundStmt(ICodeNode compoundNode, Dictionary environment) {
+  private Object executeCompoundStmt(ICodeNode compoundNode, Dictionary environment) {
     ArrayList<ICodeNode> stmtsNode = compoundNode.getChildren();
     StmtExecutor stmtExecutor = new StmtExecutor();
-
+    Object result = NO_PRINT;
     for (ICodeNode stmtNode : stmtsNode) {
-      stmtExecutor.execute(stmtNode, environment);
+      result = stmtExecutor.execute(stmtNode, environment);
+      if (stmtNode.getType() == RETURN_STATEMENT)
+        break;
     }
+    return result;
   }
 
   /**
