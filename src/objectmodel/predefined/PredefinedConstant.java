@@ -10,6 +10,7 @@ public class PredefinedConstant {
   public static Dictionary GLOBAL_DICT = new Dictionary();
 
   public static Instance NONE = new Instance(OBJECT, new Dictionary(), GLOBAL_DICT);
+  public static Instance NO_PRINT = new Instance(OBJECT, new Dictionary(), GLOBAL_DICT);
   public static Instance TRUE = new Instance(BOOLEAN, new Dictionary(), GLOBAL_DICT);
   public static Instance FALSE = new Instance(BOOLEAN, new Dictionary(), GLOBAL_DICT);
 
@@ -26,7 +27,7 @@ public class PredefinedConstant {
 
   public static void initializeEnvironment(Dictionary environment) {
     environment.put("None", NONE);
-    environment.put("True", NONE);
-    environment.put("False", NONE);
+    environment.put("True", TRUE);
+    environment.put("False", FALSE);
   }
 }
