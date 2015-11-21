@@ -410,7 +410,7 @@ public class ExprStmtExecutor extends Executor {
     }
 
     // the type of currentObject should be String or Instance
-    if (!(currentObject instanceof String || currentObject instanceof Instance)) {
+    if (!(currentObject instanceof String || currentObject instanceof Base)) {
       errorHandler.flag(currentNode, ASSIGN_TO_LEFT_VALUE, this);
       throw new AssignedFaultException();
     } else if (currentObject instanceof String) {
@@ -481,7 +481,7 @@ public class ExprStmtExecutor extends Executor {
         if (identifier == null) {
           identifier = new Instance(TMPTYPE, new Dictionary(), environment);
         }
-        ((Instance)identifier).writeAttr("__name__", node.getAttribute(IDENTIFIER_NAME));
+        ((Base)identifier).writeAttr("__name__", node.getAttribute(IDENTIFIER_NAME));
         return identifier;
       }
 
