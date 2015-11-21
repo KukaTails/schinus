@@ -57,21 +57,18 @@ public class MethodInstance extends Instance {
     }
 
     StmtExecutor statementExecutor = new StmtExecutor();
-    Object returnStatementResult = NONE;
-    Object statementResult = NONE;
-
+    Object result = NONE;
     ArrayList<ICodeNode> statements = funcBodyCode.getChildren();
 
-    // if there is a return statement, and the result of return statement will be returned.
-    // if there is no return statement, the result of last statement will be returned.
+    // return the result of return statement
     for (ICodeNode statement : statements) {
       if (statement.getType() == RETURN_STATEMENT) {
-        returnStatementResult = statementExecutor.execute(statement, getFields());
+        result = statementExecutor.execute(statement, getFields());
       } else {
-        statementResult = statementExecutor.execute(statement, getFields());
+        statementExecutor.execute(statement, getFields());
       }
     }
-    return returnStatementResult == null ? statementResult : returnStatementResult;
+    return result;
   }
 
   /**
