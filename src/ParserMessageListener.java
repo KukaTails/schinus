@@ -71,6 +71,8 @@ public class ParserMessageListener implements MessageListener {
 
         // Text, if any, of the bad token.
         if (tokenText != null) {
+          if (tokenText == "\n")
+            tokenText = "\\n";
           flagBuffer.append(" [at \"").append(tokenText).append("\"]");
         }
 
