@@ -48,6 +48,10 @@ public class ExprStmtParser extends StatementParser {
       assignExpressionNode.addChild(expressionNode);
       assignExpressionNode.addChild(parseTest(token));
       expressionNode = assignExpressionNode;
+    } else {
+      ICodeNode exprNode = ICodeFactory.createICodeNode(EXPRESSION_NODE);
+      exprNode.addChild(expressionNode);
+      expressionNode = exprNode;
     }
 
     if (currentToken().getType() == END_OF_LINE) {
@@ -483,6 +487,7 @@ public class ExprStmtParser extends StatementParser {
 
       token = nextToken();  // consume DOT
       fieldTrailerNode.setAttribute(FIELD_NAME, token.getText());
+      token = nextToken();  // consume field name
       return fieldTrailerNode;
     } else {
       errorHandler.flag(token, UNEXPECTED_TOKEN, this);
