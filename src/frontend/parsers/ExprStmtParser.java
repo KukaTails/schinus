@@ -44,7 +44,7 @@ public class ExprStmtParser extends StatementParser {
     if (currentToken().getType() == ASSIGN) {
       ICodeNode assignExpressionNode = ICodeFactory.createICodeNode(ASSIGN_EXP_NODE);
 
-      token = nextToken();  // consume ASSIGN
+      token = match(ASSIGN);  // consume ASSIGN
       assignExpressionNode.addChild(expressionNode);
       assignExpressionNode.addChild(parseTest(token));
       expressionNode = assignExpressionNode;
@@ -55,11 +55,25 @@ public class ExprStmtParser extends StatementParser {
     }
 
     if (currentToken().getType() == END_OF_LINE) {
-      nextToken(); // consume END_OF_LINE token
+      match(END_OF_LINE); // consume END_OF_LINE token
     } else {
+      nextToken();  // TODO
       errorHandler.flag(token, MISSING_END_OF_LINE, this);
     }
     return expressionNode; // return expressionNode with expression statement flag
+  }
+
+  /**
+   * Parse expression.
+   * @param token the token used to start to parse.
+   * @return intermediate code node of expression.
+   * @throws Exception if an error occurred.
+   */
+  public ICodeNode parseExpr(Token token) throws Exception {
+    ICodeNode exprNode = ICodeFactory.createICodeNode(EXPRESSION_NODE);
+
+    exprNode.addChild(parseTest(token));
+    return exprNode;
   }
 
   /**
@@ -88,7 +102,7 @@ public class ExprStmtParser extends StatementParser {
 
       orTestExpNode.addChild(andTestExpNode);
       while (currentToken().getType() == LOGICAL_OR) {
-        token = nextToken();  // consume LOGICAL_OR
+        token = match(LOGICAL_OR);  // consume LOGICAL_OR
         andTestExpNode = parseAndTest(token);
         orTestExpNode.addChild(andTestExpNode);
       }
@@ -113,7 +127,7 @@ public class ExprStmtParser extends StatementParser {
 
       andTestExpNode.addChild(notTestExpNode);
       while (currentToken().getType() == LOGICAL_AND) {
-        token = nextToken();  // consume LOGICAL_AND
+        token = match(LOGICAL_AND);  // consume LOGICAL_AND
         notTestExpNode = parseNotTest(token);
         andTestExpNode.addChild(notTestExpNode);
       }
@@ -134,9 +148,8 @@ public class ExprStmtParser extends StatementParser {
     if (token.getType() == LOGICAL_NOT) {
       ICodeNode notTestExpNode = ICodeFactory.createICodeNode(LOGICAL_NOT_OP);
 
-      token = nextToken();  // consume LOGICAL NOT
+      token = match(LOGICAL_NOT);  // consume LOGICAL NOT
       notTestExpNode.addChild(parseNotTest(token));
-
       return notTestExpNode;
     } else {
       return parseComparisonExpression(token);
@@ -310,10 +323,10 @@ public class ExprStmtParser extends StatementParser {
       if (token.getType() == SUB) {
         factorNode = ICodeFactory.createICodeNode(NEGATE_OP);
 
-        token = nextToken();  // consume SUB
+        token = match(SUB);  // consume SUB
         factorNode.addChild(parseFactor(token));
       } else {
-        token = nextToken();  // consume ADD
+        token = match(ADD);  // consume ADD
         factorNode = parseFactor(token);
       }
     } else {
@@ -337,7 +350,7 @@ public class ExprStmtParser extends StatementParser {
       ICodeNode opNode = ICodeFactory.createICodeNode(POWER_OP);
 
       opNode.addChild(rootNode);
-      token = nextToken();  // consume POWER
+      token = match(POWER);  // consume POWER
       opNode.addChild(parseAtomExpr(token));
 
       rootNode = opNode;
@@ -375,14 +388,14 @@ public class ExprStmtParser extends StatementParser {
 
     switch (token.getType()) {
       case LEFT_PAREN: {
-        token = nextToken();  // consume the (
+        token = match(LEFT_PAREN);  // consume the (
 
         // Parse an expression and make its node the root node.
         rootNode = parseTest(token);
 
         // Look for the matching ) token.
         if (currentToken().getType() == RIGHT_PAREN) {
-          nextToken();  // consume the )
+          match(RIGHT_PAREN);  // consume the )
         } else {
           errorHandler.flag(token, MISSING_RIGHT_PAREN, this);
         }
@@ -395,7 +408,7 @@ public class ExprStmtParser extends StatementParser {
         rootNode = ICodeFactory.createICodeNode(IDENTIFIER_OPERAND);
         rootNode.setAttribute(IDENTIFIER_NAME, name);
 
-        nextToken();  // consume the identifier
+        match(IDENTIFIER);  // consume the identifier
         break;
       }
 
@@ -404,7 +417,7 @@ public class ExprStmtParser extends StatementParser {
         rootNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT_OPERAND);
         rootNode.setAttribute(VALUE, token.getValue());
 
-        nextToken();  // consume the number
+        match(INTEGER_CONSTANT);  // consume the number
         break;
       }
 
@@ -413,7 +426,7 @@ public class ExprStmtParser extends StatementParser {
         rootNode = ICodeFactory.createICodeNode(FLOAT_CONSTANT_OPERAND);
         rootNode.setAttribute(VALUE, token.getValue());
 
-        nextToken();  // consume the float number
+        match(FLOAT_CONSTANT);  // consume the float number
         break;
       }
 
@@ -424,7 +437,7 @@ public class ExprStmtParser extends StatementParser {
         rootNode = ICodeFactory.createICodeNode(STRING_LITERAL_OPERAND);
         rootNode.setAttribute(VALUE, value);
 
-        nextToken();  // consume the string
+        match(STRING_LITERAL);  // consume the string
         break;
       }
 
@@ -437,11 +450,13 @@ public class ExprStmtParser extends StatementParser {
         } else {
           rootNode.setAttribute(VALUE, false);
         }
+        nextToken();  // consume true or false
         break;
       }
 
       case NONE: {
         rootNode = ICodeFactory.createICodeNode(NONE_OPERAND);
+        match(NONE);
         break;
       }
 
@@ -465,29 +480,29 @@ public class ExprStmtParser extends StatementParser {
     if (token.getType() == LEFT_PAREN) {
       ICodeNode argsTrailerNode = ICodeFactory.createICodeNode(ARGUMENTS_TRAILER);
 
-      token = nextToken();  // consume LEFT_PAREN
+      token = match(LEFT_PAREN);  // consume LEFT_PAREN
       if (token.getType() != RIGHT_PAREN) {
         argsTrailerNode.addChild(parseArguList(token));
       }
-      nextToken();  // consume RIGHT_PAREN
+      match(RIGHT_PAREN);  // consume RIGHT_PAREN
 
       return argsTrailerNode;
     } else if (token.getType() == LEFT_BRACKET) {
       ICodeNode subscriptTrailerNode = ICodeFactory.createICodeNode(SUBSCRIPT_TRAILER);
 
-      token = nextToken();
+      token = match(LEFT_BRACKET);  // consume left bracket
       if (token.getType() != RIGHT_BRACKET) {
         subscriptTrailerNode.addChild(parseSubscriptList(token));
       }
-      nextToken();  // consume RIGHT_BRACKET
+      match(RIGHT_BRACKET);  // consume RIGHT_BRACKET
 
       return subscriptTrailerNode;
     } else if (token.getType() == DOT) {
       ICodeNode fieldTrailerNode = ICodeFactory.createICodeNode(FIELD_TRAILER);
 
-      token = nextToken();  // consume DOT
+      token = match(DOT);  // consume DOT
       fieldTrailerNode.setAttribute(FIELD_NAME, token.getText());
-      token = nextToken();  // consume field name
+      match(IDENTIFIER);  // consume field name
       return fieldTrailerNode;
     } else {
       errorHandler.flag(token, UNEXPECTED_TOKEN, this);
@@ -506,8 +521,8 @@ public class ExprStmtParser extends StatementParser {
     ICodeNode arguListNode = ICodeFactory.createICodeNode(ARGUMENTS_LIST_NODE);
 
     arguListNode.addChild(parseArgument(token));
-    while ((token = currentToken()).getType() == COMMA) {
-      token = nextToken();  // consume COMMA
+    while (currentToken().getType() == COMMA) {
+      token = match(COMMA);  // consume COMMA
       arguListNode.addChild(parseArgument(token));
     }
     return arguListNode;
@@ -524,8 +539,7 @@ public class ExprStmtParser extends StatementParser {
     ICodeNode argumentNode = ICodeFactory.createICodeNode(ARGUMENTS_NODE);
 
     argumentNode.addChild(parseTest(token));
-    token = currentToken();
-    if (token.getType() == ASSIGN) {
+    if (currentToken().getType() == ASSIGN) {
       argumentNode.addChild(parseTest(token));
     }
     return argumentNode;
