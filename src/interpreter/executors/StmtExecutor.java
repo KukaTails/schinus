@@ -3,6 +3,7 @@ package interpreter.executors;
 import static intermediate.ICodeKey.LINE;
 import static message.MessageType.SOURCE_LINE;
 import static objectmodel.predefined.PredefinedConstant.NONE;
+import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 import static interpreter.RuntimeErrorCode.UNIMPLEMENTED_FEATURE;
 
 import message.Message;
@@ -31,29 +32,29 @@ public class StmtExecutor extends Executor {
    * @return null.
    */
   public Object execute(ICodeNode node, Dictionary environment) {
-    ExecuteResultPrinter objectPrinter = new ExecuteResultPrinter();
     ICodeNodeType nodeType = node.getType();
-    Object result = NONE;
+    Object result = NO_PRINT;
 
     try {
+
       switch(nodeType) {
         case ATOM_EXPR_NODE:
         case ASSIGN_EXP_NODE:
-        case EXPRESSION_STATEMENT: {
+        case EXPRESSION_NODE: {
           ExprStmtExecutor expressionStatementExecutor = new ExprStmtExecutor();
           result = expressionStatementExecutor.execute(node, environment);
-          break;
-        }
-
-        case IDENTIFIER_OPERAND: {
-          VariableExecutor variableExecutor = new VariableExecutor();
-          result = variableExecutor.execute(node, environment);
           break;
         }
 
         case IF_STATEMENT: {
           IfStmtExecutor ifStmtExecutor = new IfStmtExecutor();
           result = ifStmtExecutor.execute(node, environment);
+          break;
+        }
+
+        case WHILE_STATEMENT: {
+          WhileStmtExecutor whileStmtExecutor = new WhileStmtExecutor();
+          result = whileStmtExecutor.execute(node, environment);
           break;
         }
 
@@ -73,12 +74,6 @@ public class StmtExecutor extends Executor {
           break;
         }
 
-        case FUNCTION_CALL_STATEMENT: {
-          FuncCallExecutor functionCallExecutor = new FuncCallExecutor();
-          result = functionCallExecutor.execute(node, environment);
-          break;
-        }
-
         case CLASS_DEFINE_STATEMENT: {
           ClassDefStmtExecutor classDefStmtExecutor = new ClassDefStmtExecutor();
           result = classDefStmtExecutor.execute(node, environment);
@@ -91,19 +86,13 @@ public class StmtExecutor extends Executor {
           break;
         }
 
-        case WHILE_STATEMENT: {
-          WhileStmtExecutor whileStmtExecutor = new WhileStmtExecutor();
-          result = whileStmtExecutor.execute(node, environment);
-          break;
-        }
-
         case EMPTY_STATEMENT: {
-          return null;
+          return NO_PRINT;
         }
 
         default: {
           errorHandler.flag(node, UNIMPLEMENTED_FEATURE, this);
-          return null;
+          return NO_PRINT;
         }
       }
     } catch(Exception e) {
