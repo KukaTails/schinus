@@ -37,10 +37,10 @@ public class ClassDefStmtExecutor extends StmtExecutor {
 
     Class newCls;
     if (baseClsesName.size() == 0)
-      newCls = new Class(clsName, OBJECT, new Dictionary(), TYPE, environment);
+      newCls = new Class(clsName, OBJECT, new Dictionary(), TYPE, environment, environment);
     else {
       Object baseCls = environment.get(baseClsesName.get(0));
-      newCls = new Class(clsName, (Class)baseCls, new Dictionary(), TYPE, environment);
+      newCls = new Class(clsName, (Class)baseCls, new Dictionary(), TYPE, environment, environment);
     }
     newCls.writeAttr("__name__", clsName);
     environment.put(clsName, newCls);
