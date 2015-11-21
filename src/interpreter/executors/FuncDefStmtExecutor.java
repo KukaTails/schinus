@@ -37,7 +37,7 @@ public class FuncDefStmtExecutor extends StmtExecutor {
     ArrayList<String> paramsName = (ArrayList) functionParams.getAttribute(PARAMETERS_LIST);
 
     // put the function into environment
-    functionInstance = new MethodInstance(funcName, environment, paramsName.size(), paramsName, functionBody);
+    functionInstance = new MethodInstance(funcName, environment, environment, paramsName.size(), paramsName, functionBody);
     environment.put(funcName, functionInstance);
     return null;
   }
