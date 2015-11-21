@@ -417,7 +417,7 @@ public class ExprStmtExecutor extends Executor {
       currentObject = environment.get(currentObject);
 
       if (currentObject == null) {
-        errorHandler.flag(currentNode, UNDEFINE_VARIABLE, this);
+        errorHandler.flag(currentNode, UNDEFINED_NAME, this);
         throw new UndefinedException();
       }
     }
