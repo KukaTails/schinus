@@ -4,6 +4,7 @@ import static intermediate.ICodeKey.*;
 import static intermediate.ICodeNodeType.*;
 import static interpreter.RuntimeErrorCode.*;
 import static objectmodel.predefined.PredefinedConstant.NONE;
+import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 import static objectmodel.predefined.PredefinedType.*;
 
 import interpreter.Executor;
@@ -16,7 +17,6 @@ import objectmodel.baseclasses.MethodInstance;
 import interpreter.exception.UndefinedException;
 import interpreter.exception.NotCallableException;
 import interpreter.exception.AssignedFaultException;
-import util.ObjectPrinter;
 
 import java.util.EnumSet;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class ExprStmtExecutor extends Executor {
    */
   public Object execute(ICodeNode node, Dictionary environment) throws Exception {
     ICodeNodeType nodeType = node.getType();
-    Object result;
+    Object result = NO_PRINT;
 
     switch(nodeType) {
       case ASSIGN_EXP_NODE: {
@@ -44,8 +44,14 @@ public class ExprStmtExecutor extends Executor {
         break;
       }
 
+      case EXPRESSION_NODE: {
+        ICodeNode exprNode = node.getChildren().get(0);
+        result = executeTest(exprNode, environment);
+        break;
+      }
+
       default: {
-        result = executeTest(node, environment);
+        errorHandler.flag(node, UNIMPLEMENTED_FEATURE, this);
       }
     }
     return result;
@@ -58,35 +64,25 @@ public class ExprStmtExecutor extends Executor {
 
     Base assignedObject = (Base)executeTest(assignedNode, environment);
 
-    Dictionary parentEnv = ((Base) assignedObject).getFields().getDictionaryParent();
+    Dictionary existedEnv = ((Base) assignedObject).getExistedEnv();
+    // Debug dictionary
+
+    Dictionary env1 = ((Base)assignedObject).getFields();
+    Dictionary env2 = ((Base)assignedObject).getExistedEnv();
+
     String variableName = (String) ((Base) assignedObject).readAttribute("__name__");
+
     Object expObject = executeTest(expNode, environment);
 
     ((Base)expObject).writeAttr("__name__", variableName);
-    if (parentEnv.containsKey(variableName)) {
-      parentEnv.replace(variableName, expObject);
+    ((Base)expObject).setExistedEnv(assignedObject.getExistedEnv());
+    if (existedEnv.containsKey(variableName)) {
+      existedEnv.replace(variableName, expObject);
     } else {
-      parentEnv.put(variableName, expObject);
+      existedEnv.put(variableName, expObject);
     }
 
     return NONE;
-  }
-
-
-  private void createInstance(String objectName, Object object, Dictionary environment) {
-    Object instance = object;
-
-    if (instance instanceof Integer) {
-      instance = new Instance(INTEGER, new Dictionary(), environment);
-      ((Instance)instance).writeAttr("__value__", object);
-    } else if (instance instanceof Float) {
-      instance = new Instance(FLOAT, new Dictionary(), environment);
-      ((Instance)instance).writeAttr("__value__", object);
-    } else if (instance instanceof String) {
-      instance = new Instance(STRING, new Dictionary(), environment);
-    }
-
-    environment.put(objectName, instance);
   }
 
 
@@ -155,10 +151,10 @@ public class ExprStmtExecutor extends Executor {
     for (ICodeNode child : children) {
       Object value = executeTest(child, environment);
       if (convertValueTOBoolean(value)) {
-        return createConstantInstance(true, environment);
+        return createConstantInstance(true, environment, environment);
       }
     }
-    return createConstantInstance(false, environment);
+    return createConstantInstance(false, environment, environment);
   }
 
   public Object executeAndTest(ICodeNode node, Dictionary environment) throws Exception {
@@ -167,10 +163,10 @@ public class ExprStmtExecutor extends Executor {
     for (ICodeNode child : children) {
       Object value = executeTest(child, environment);
       if (!convertValueTOBoolean(value)) {
-        return createConstantInstance(false, environment);
+        return createConstantInstance(false, environment, environment);
       }
     }
-    return createConstantInstance(true, environment);
+    return createConstantInstance(true, environment, environment);
   }
 
   public Object executeNotTest(ICodeNode node, Dictionary environment) throws Exception {
@@ -180,7 +176,7 @@ public class ExprStmtExecutor extends Executor {
       ICodeNode iCodeNode = node.getChildren().get(0);
       Object value = executeNotTest(iCodeNode, environment);
 
-      return createConstantInstance(!convertValueTOBoolean(value), environment);
+      return createConstantInstance(!convertValueTOBoolean(value), environment, environment);
     }
   }
 
@@ -369,7 +365,7 @@ public class ExprStmtExecutor extends Executor {
           break;
       }
     }
-    return createConstantInstance(arithResult, environment);
+    return createConstantInstance(arithResult, environment, environment);
   }
 
   /**
@@ -398,19 +394,11 @@ public class ExprStmtExecutor extends Executor {
     Object currentObject = executeAtom(currentNode, currentEnv);
 
     if (children.size() == 1) {
-      if (currentObject instanceof String) {
-        String name = (String)currentObject;
-        currentObject = environment.get(currentObject);
-        if (currentObject == null) {
-          currentObject = new Instance(TMPTYPE, new Dictionary(), environment);
-          ((Instance)currentObject).writeAttr("__name__", name);
-        }
-      }
       return currentObject;
     }
 
     // the type of currentObject should be String or Instance
-    if (!(currentObject instanceof String || currentObject instanceof Base)) {
+    /*if (!(currentObject instanceof String || currentObject instanceof Base)) {
       errorHandler.flag(currentNode, ASSIGN_TO_LEFT_VALUE, this);
       throw new AssignedFaultException();
     } else if (currentObject instanceof String) {
@@ -420,7 +408,7 @@ public class ExprStmtExecutor extends Executor {
         errorHandler.flag(currentNode, UNDEFINED_NAME, this);
         throw new UndefinedException();
       }
-    }
+    }*/
 
     for (int i = 1; i < children.size(); ++ i) {
       ICodeNode child = children.get(i);
@@ -450,11 +438,21 @@ public class ExprStmtExecutor extends Executor {
           String fieldName = (String) child.getAttribute(FIELD_NAME);
           currentEnv = ((Base) currentObject).getFields();
           currentObject = currentEnv.get(fieldName);
+
+          if (currentObject == null && i == children.size() - 1) {
+            currentObject = new Instance(TMPTYPE, new Dictionary(), currentEnv, currentEnv);
+            ((Base) currentObject).writeAttr("__name__", fieldName);
+            currentEnv.put(fieldName, currentObject);
+          }
+
+          if (currentObject == null && i != children.size() - 1) {
+            errorHandler.flag(currentNode, UNDEFINED_NAME, this);
+          }
+
           break;
         }
 
         default: {
-          // TODO
           errorHandler.flag(child, UNIMPLEMENTED_FEATURE, this);
         }
       }
@@ -479,7 +477,7 @@ public class ExprStmtExecutor extends Executor {
         Object identifier = environment.get(identifierName);
 
         if (identifier == null) {
-          identifier = new Instance(TMPTYPE, new Dictionary(), environment);
+          identifier = new Instance(TMPTYPE, new Dictionary(), environment, environment);
         }
         ((Base)identifier).writeAttr("__name__", node.getAttribute(IDENTIFIER_NAME));
         return identifier;
@@ -490,7 +488,7 @@ public class ExprStmtExecutor extends Executor {
       case INTEGER_CONSTANT_OPERAND:
       case BOOLEAN_CONSTANT_OPERAND: {
         // create constant instance
-        return createConstantInstance(node.getAttribute(VALUE), environment);
+        return createConstantInstance(node.getAttribute(VALUE), environment, environment);
       }
 
       case NONE_OPERAND: {
