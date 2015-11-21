@@ -3,20 +3,19 @@ package interpreter.executors;
 import static intermediate.ICodeKey.*;
 import static intermediate.ICodeNodeType.*;
 import static interpreter.RuntimeErrorCode.*;
+import static objectmodel.predefined.PredefinedType.TMPTYPE;
 import static objectmodel.predefined.PredefinedConstant.NONE;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
-import static objectmodel.predefined.PredefinedType.*;
 
 import interpreter.Executor;
 import intermediate.ICodeNode;
 import intermediate.ICodeNodeType;
 import objectmodel.baseclasses.Base;
+import objectmodel.baseclasses.Class;
 import objectmodel.baseclasses.Instance;
-import objectmodel.dictionary.Dictionary;
 import objectmodel.baseclasses.MethodInstance;
-import interpreter.exception.UndefinedException;
+import objectmodel.dictionary.Dictionary;
 import interpreter.exception.NotCallableException;
-import interpreter.exception.AssignedFaultException;
 
 import java.util.EnumSet;
 import java.util.ArrayList;
@@ -45,8 +44,7 @@ public class ExprStmtExecutor extends Executor {
       }
 
       case EXPRESSION_NODE: {
-        ICodeNode exprNode = node.getChildren().get(0);
-        result = executeTest(exprNode, environment);
+        result = executeExpr(node, environment);
         break;
       }
 
@@ -63,15 +61,8 @@ public class ExprStmtExecutor extends Executor {
     ICodeNode expNode = children.get(1);
 
     Base assignedObject = (Base)executeTest(assignedNode, environment);
-
     Dictionary existedEnv = ((Base) assignedObject).getExistedEnv();
-    // Debug dictionary
-
-    Dictionary env1 = ((Base)assignedObject).getFields();
-    Dictionary env2 = ((Base)assignedObject).getExistedEnv();
-
     String variableName = (String) ((Base) assignedObject).readAttribute("__name__");
-
     Object expObject = executeTest(expNode, environment);
 
     ((Base)expObject).writeAttr("__name__", variableName);
@@ -83,6 +74,11 @@ public class ExprStmtExecutor extends Executor {
     }
 
     return NONE;
+  }
+
+  public Object executeExpr(ICodeNode node, Dictionary environment) throws Exception {
+    node = node.getChildren().get(0);
+    return executeTest(node, environment);
   }
 
 
@@ -242,8 +238,7 @@ public class ExprStmtExecutor extends Executor {
             arithResult = value1 * value2;
             break;
           case POWER_OP: {
-            double result = Math.pow(value1, value2);
-            arithResult = Math.floor(result + 0.5d);
+            arithResult = Math.pow(value1, value2);
             break;
           }
           case FLOAT_DIVIDE_OP: {
@@ -297,6 +292,10 @@ public class ExprStmtExecutor extends Executor {
           case MULTIPLY_OP:
             arithResult = value1 * value2;
             break;
+          case INTEGER_DIVIDE_OP: {
+            arithResult = (int)(value1 / value2);
+            break;
+          }
           case FLOAT_DIVIDE_OP: {
             // Check for division by zero.
             if (value2 != 0.0f) {
@@ -397,19 +396,6 @@ public class ExprStmtExecutor extends Executor {
       return currentObject;
     }
 
-    // the type of currentObject should be String or Instance
-    /*if (!(currentObject instanceof String || currentObject instanceof Base)) {
-      errorHandler.flag(currentNode, ASSIGN_TO_LEFT_VALUE, this);
-      throw new AssignedFaultException();
-    } else if (currentObject instanceof String) {
-      currentObject = environment.get(currentObject);
-
-      if (currentObject == null) {
-        errorHandler.flag(currentNode, UNDEFINED_NAME, this);
-        throw new UndefinedException();
-      }
-    }*/
-
     for (int i = 1; i < children.size(); ++ i) {
       ICodeNode child = children.get(i);
       ICodeNodeType nodeType = child.getType();
@@ -417,16 +403,22 @@ public class ExprStmtExecutor extends Executor {
       switch(nodeType) {
         case ARGUMENTS_TRAILER: {
           // object is not callable
-          if (!(currentObject instanceof MethodInstance)) {
+          if (!(currentObject instanceof MethodInstance || currentObject instanceof Class)) {
             errorHandler.flag(child, CALL_UNCALLABLE_OBJECT, this);
             throw new NotCallableException();
           }
 
-          MethodInstance method = (MethodInstance) currentObject;
-          ICodeNode argumentsNode = child.getChildren().get(0);
-          ArrayList<Object> arguments = executeArguList(argumentsNode, environment);
-          currentObject = method.callMethod(arguments);
-          currentEnv = ((MethodInstance) currentObject).getFields();
+          if (currentObject instanceof MethodInstance) {
+            MethodInstance method = (MethodInstance) currentObject;
+            ICodeNode argumentsNode = child.getChildren().get(0);
+            ArrayList<Object> arguments = executeArguList(argumentsNode, environment);
+            currentObject = method.callMethod(arguments);
+            currentEnv = ((Base) currentObject).getFields();
+          } else {
+            Class cls = (Class)currentObject;
+            currentObject = new Instance(cls, new Dictionary(), cls.getFields(), currentEnv);
+            currentEnv = ((Instance) currentObject).getFields();
+          }
           break;
         }
 
@@ -436,8 +428,7 @@ public class ExprStmtExecutor extends Executor {
 
         case FIELD_TRAILER: {
           String fieldName = (String) child.getAttribute(FIELD_NAME);
-          currentEnv = ((Base) currentObject).getFields();
-          currentObject = currentEnv.get(fieldName);
+          currentObject = ((Base) currentObject).readAttribute(fieldName);
 
           if (currentObject == null && i == children.size() - 1) {
             currentObject = new Instance(TMPTYPE, new Dictionary(), currentEnv, currentEnv);
