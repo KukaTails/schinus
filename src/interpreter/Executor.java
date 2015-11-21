@@ -3,6 +3,7 @@ package interpreter;
 import static intermediate.ICodeNodeType.ATOM_EXPR_NODE;
 import static intermediate.ICodeNodeType.EXPRESSION_NODE;
 import static objectmodel.predefined.PredefinedConstant.NONE;
+import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 import static objectmodel.predefined.PredefinedType.*;
 
 import message.Message;
@@ -58,8 +59,12 @@ public class Executor {
     // Get the root node of the intermediate code and execute the node.
     StmtExecutor statementExecutor = new StmtExecutor();
     Object result = statementExecutor.execute(iCodeNode, environment);
-    if (iCodeNode.getType() == EXPRESSION_NODE)
+    if (iCodeNode.getType() == EXPRESSION_NODE) {
       executeResultPrinter.printObject(result);
+      if (result != NO_PRINT) {
+        System.out.println();
+      }
+    }
   }
 
   /**
