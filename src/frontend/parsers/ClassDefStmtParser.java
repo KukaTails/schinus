@@ -1,8 +1,12 @@
 package frontend.parsers;
 
 import static frontend.TokenType.END;
+import static frontend.TokenType.CLASS;
+import static frontend.TokenType.COMMA;
+import static frontend.TokenType.IDENTIFIER;
 import static frontend.TokenType.LEFT_PAREN;
 import static frontend.TokenType.RIGHT_PAREN;
+import static frontend.TokenType.END_OF_LINE;
 import static intermediate.ICodeKey.CLASS_NAME;
 import static intermediate.ICodeKey.BASE_CLASSES_NAME;
 import static intermediate.ICodeNodeType.EMPTY_STATEMENT;
@@ -32,31 +36,31 @@ public class ClassDefStmtParser extends StatementParser {
    * @return intermediate code node of class define statement.
    * @throws Exception if an error occurred.
    */
+  @Override
   public ICodeNode parse(Token token) throws Exception {
     ICodeNode iCodeNode = ICodeFactory.createICodeNode(CLASS_DEFINE_STATEMENT);
 
-    token = nextToken();  // consume CLASS
+    token = match(CLASS);  // consume CLASS
     iCodeNode.setAttribute(CLASS_NAME, token.getText());
+    token = match(IDENTIFIER);  // consume class name
 
-    token = nextToken();  // consume class name
     ICodeNode arglistNode = ICodeFactory.createICodeNode(BASE_CLASSES_LIST);
     ArrayList<String> baseClasses = new ArrayList<>();
     if (token.getType() == LEFT_PAREN) {
-      token = nextToken();  // consume left paren
+      token = match(LEFT_PAREN);  // consume left paren
       while (token.getType() != RIGHT_PAREN) {
         baseClasses.add(token.getText());
-        token = nextToken();  // consume class name
+        token = match(IDENTIFIER);  // consume class name
         if (token.getType() == RIGHT_PAREN)
           break;
-        token = nextToken(); // consume COMMA
+        token = match(COMMA); // consume COMMA
       }
-      nextToken();  // consume right paren
+      match(RIGHT_PAREN);  // consume right paren
     }
     arglistNode.setAttribute(BASE_CLASSES_NAME, baseClasses);
     iCodeNode.addChild(arglistNode);
 
-    token = nextToken();  // consume :
-    token = nextToken();  // consume EOL
+    token = match(END_OF_LINE);  // consume EOL
     ICodeNode classBodyNode = ICodeFactory.createICodeNode(CLASS_DEFINE_BODY);
     StatementParser statementParser = new StatementParser(this);
     while ((token = currentToken()).getType() != END) {
@@ -66,8 +70,9 @@ public class ClassDefStmtParser extends StatementParser {
       }
     }
     iCodeNode.addChild(classBodyNode);
+    match(END);
+    match(END_OF_LINE);
 
-    nextToken();  // consume END
     return iCodeNode;
   }
 }
