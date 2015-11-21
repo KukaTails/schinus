@@ -1,7 +1,9 @@
 package frontend;
 
 import static frontend.ErrorCode.IO_ERROR;
+import static frontend.ErrorCode.UNEXPECTED_TOKEN;
 
+import frontend.tokens.EofToken;
 import message.Message;
 import message.MessageHandler;
 import message.MessageListener;
@@ -10,6 +12,7 @@ import intermediate.ICodeNode;
 import frontend.parsers.StatementParser;
 
 import java.io.IOException;
+import java.util.EnumSet;
 
 /**
  * <h1>Parser</h1>
@@ -74,6 +77,40 @@ public class Parser implements MessageProducer {
 
     return iCodeNode;
   }
+
+  /**
+   * match expected token and get the next token.
+   * @param expectedTokenType the type of expected token.
+   * @return the next token.
+   * @throws Exception if an error occurred.
+   */
+  public Token match(TokenType expectedTokenType) throws Exception {
+    if (currentToken().getType() != expectedTokenType)
+      errorHandler.flag(currentToken(), UNEXPECTED_TOKEN, this);
+    return nextToken();
+  }
+
+  /**
+   * Synchronize the parser.
+   * @param syncSet the set of token types for synchronizing the parser.
+   * @return the token where the parser has synchronized.
+   * @throws Exception if an error occurred.
+   */
+  public Token synchronize(EnumSet syncSet) throws Exception {
+    Token token = currentToken();
+
+    if (!syncSet.contains(token.getType())) {
+      // Flag the unexpected token.
+      errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+
+      // Recover by skipping tokens that are not in the syncSet
+      do {
+        token = nextToken();
+      } while (!(token instanceof EofToken) && !syncSet.contains(token.getType()));
+    }
+    return token;
+  }
+
 
   /**
    * @return the error count.
