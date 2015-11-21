@@ -1,10 +1,10 @@
 package frontend.parsers;
 
+import static frontend.TokenType.END_OF_LINE;
 import static intermediate.ICodeNodeType.EMPTY_STATEMENT;
 
 import frontend.Token;
 import frontend.Parser;
-import frontend.TokenType;
 import intermediate.ICodeNode;
 import intermediate.ICodeFactory;
 
@@ -21,31 +21,19 @@ public class StatementParser extends Parser {
     super(parent);
   }
 
+  /**
+   * @param token token used to start parse.
+   * @return intermediate code node of statement.
+   * @throws Exception if an error occurred.
+   */
   public ICodeNode parse(Token token) throws Exception {
-    ICodeNode statementNode = null;
+    ICodeNode statementNode;
 
-    switch((TokenType) token.getType()) {
-      case END_OF_LINE: {
-        nextToken();  // consume END_OF_LINE
-        statementNode = ICodeFactory.createICodeNode(EMPTY_STATEMENT);
-        break;
-      }
+    switch(token.getType()) {
 
       case IF: {
         IfStmtParser ifStatementParser = new IfStmtParser(this);
         statementNode = ifStatementParser.parse(token);
-        break;
-      }
-
-      case DEF: {
-        FuncDefStmtParser functionDefStatementParser = new FuncDefStmtParser(this);
-        statementNode = functionDefStatementParser.parse(token);
-        break;
-      }
-
-      case RETURN: {
-        ReturnStmtParser returnStmtParser = new ReturnStmtParser(this);
-        statementNode = returnStmtParser.parse(token);
         break;
       }
 
@@ -55,9 +43,27 @@ public class StatementParser extends Parser {
         break;
       }
 
+      case RETURN: {
+        ReturnStmtParser returnStmtParser = new ReturnStmtParser(this);
+        statementNode = returnStmtParser.parse(token);
+        break;
+      }
+
+      case DEF: {
+        FuncDefStmtParser functionDefStatementParser = new FuncDefStmtParser(this);
+        statementNode = functionDefStatementParser.parse(token);
+        break;
+      }
+
       case CLASS: {
         ClassDefStmtParser classDefStmtParser = new ClassDefStmtParser(this);
         statementNode = classDefStmtParser.parse(token);
+        break;
+      }
+
+      case END_OF_LINE: {
+        match(END_OF_LINE);  // consume end of line
+        statementNode = ICodeFactory.createICodeNode(EMPTY_STATEMENT);
         break;
       }
 
