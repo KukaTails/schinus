@@ -30,12 +30,6 @@ public class StatementParser extends Parser {
         statementNode = ICodeFactory.createICodeNode(EMPTY_STATEMENT);
         break;
       }
-      case LET: {
-        AssignmentStatementParser assignmentStatementParser = new AssignmentStatementParser(this);
-        token = nextToken();  // consume LET token
-        statementNode = assignmentStatementParser.parse(token);
-        break;
-      }
 
       case IF: {
         IfStmtParser ifStatementParser = new IfStmtParser(this);
@@ -46,12 +40,6 @@ public class StatementParser extends Parser {
       case DEF: {
         FuncDefStmtParser functionDefStatementParser = new FuncDefStmtParser(this);
         statementNode = functionDefStatementParser.parse(token);
-        break;
-      }
-
-      case CALL: {
-        FuncCallParser functionCallStatement = new FuncCallParser(this);
-        statementNode = functionCallStatement.parse(token);
         break;
       }
 
@@ -72,6 +60,7 @@ public class StatementParser extends Parser {
         statementNode = classDefStmtParser.parse(token);
         break;
       }
+
       default: {
         ExprStmtParser expressionParser = new ExprStmtParser(this);
         statementNode = expressionParser.parse(token);
