@@ -51,9 +51,12 @@ public class MethodInstance extends Instance {
       return NONE;
     }
 
-    // put the parameters into dictionary
+    // put the parameters into dictionary,
+    // and set the field of method to be the existedEnv of parameters
     for (int i = 0; i < parameterCount; ++i) {
-      writeAttr(parametersName.get(i), parameters.get(i));
+      Base parameter = (Base)parameters.get(i);
+      parameter.setExistedEnv(this.getFields());
+      writeAttr(parametersName.get(i), parameter);
     }
 
     StmtExecutor statementExecutor = new StmtExecutor();
