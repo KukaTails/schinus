@@ -5,6 +5,7 @@ import static objectmodel.predefined.PredefinedConstant.NONE;
 import static objectmodel.predefined.PredefinedType.FUNCTION;
 
 import intermediate.ICodeNode;
+import interpreter.exception.ReturnFlowException;
 import objectmodel.dictionary.Dictionary;
 import interpreter.executors.StmtExecutor;
 
@@ -44,7 +45,8 @@ public class MethodInstance extends Instance {
    * @param parameters the object of parameters
    * @return the result of executing method on parameters.
    */
-  public Object callMethod(ArrayList<Object> parameters) {
+  public Object callMethod(ArrayList<Object> parameters)
+      throws ReturnFlowException {
     // if the number of parameters doesn't equal to parameterCount,
     // return None.
     if (parameters.size() != parameterCount) {
@@ -63,13 +65,17 @@ public class MethodInstance extends Instance {
     Object result = NONE;
     ArrayList<ICodeNode> statements = funcBodyCode.getChildren();
 
-    // return the result of return statement
-    for (ICodeNode statement : statements) {
-      if (statement.getType() == RETURN_STATEMENT) {
-        result = statementExecutor.execute(statement, getFields());
-      } else {
-        statementExecutor.execute(statement, getFields());
+    try {
+      // return the result of return statement
+      for (ICodeNode statement : statements) {
+        if (statement.getType() == RETURN_STATEMENT) {
+          result = statementExecutor.execute(statement, getFields());
+        } else {
+          statementExecutor.execute(statement, getFields());
+        }
       }
+    } catch(ReturnFlowException e) {
+      return e.getReturnValue();
     }
     return result;
   }
