@@ -9,6 +9,7 @@ import static objectmodel.predefined.PredefinedType.OBJECT;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 
 import intermediate.ICodeNode;
+import interpreter.exception.ReturnFlowException;
 import objectmodel.baseclasses.Class;
 import objectmodel.dictionary.Dictionary;
 
@@ -18,7 +19,8 @@ public class ClassDefStmtExecutor extends StmtExecutor {
   public ClassDefStmtExecutor() {
   }
 
-  public Object execute(ICodeNode iCodeNode, Dictionary environment) {
+  public Object execute(ICodeNode iCodeNode, Dictionary environment)
+      throws ReturnFlowException {
     ArrayList<ICodeNode> children = iCodeNode.getChildren();
     ICodeNode arglistNode = children.get(0);
     ICodeNode classBodyNode = children.get(1);
