@@ -6,6 +6,8 @@ import static objectmodel.predefined.PredefinedConstant.NONE;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 import static objectmodel.predefined.PredefinedType.*;
 
+import intermediate.ICodeNodeType;
+import interpreter.exception.ReturnFlowException;
 import message.Message;
 import message.MessageHandler;
 import message.MessageListener;
@@ -53,17 +55,26 @@ public class Executor {
    * @param environment the intermediate code executed in the environment.
    * @throws Exception if an error occurred.
    */
-  public void process(ICodeNode iCodeNode, Dictionary environment) throws Exception {
-    ExecuteResultPrinter executeResultPrinter = new ExecuteResultPrinter();
-
+  public void process(ICodeNode iCodeNode, Dictionary environment) {
     // Get the root node of the intermediate code and execute the node.
     StmtExecutor statementExecutor = new StmtExecutor();
-    Object result = statementExecutor.execute(iCodeNode, environment);
-    if (iCodeNode.getType() == EXPRESSION_NODE) {
-      executeResultPrinter.printObject(result);
-      if (result != NO_PRINT) {
-        System.out.println();
+
+    try {
+      Object result = statementExecutor.execute(iCodeNode, environment);
+      if (iCodeNode.getType() == EXPRESSION_NODE) {
+        printObject(result);
       }
+    } catch(Exception e) {
+      System.out.println(e);
+    }
+  }
+
+  public void printObject(Object object) {
+    ExecuteResultPrinter executeResultPrinter = new ExecuteResultPrinter();
+
+    executeResultPrinter.printObject(object);
+    if (object != NO_PRINT) {
+      System.out.println();
     }
   }
 
