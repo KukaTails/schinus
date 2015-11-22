@@ -58,13 +58,13 @@ public class ExprStmtExecutor extends Executor {
     ICodeNode assignedNode = children.get(0);
     ICodeNode expNode = children.get(1);
 
-    Base assignedObject = (Base)executeTest(assignedNode, environment);
+    Base assignedObject = (Base) executeTest(assignedNode, environment);
     Dictionary existedEnv = ((Base) assignedObject).getExistedEnv();
     String variableName = (String) ((Base) assignedObject).readAttribute("__name__");
     Object expObject = executeTest(expNode, environment);
 
-    ((Base)expObject).writeAttr("__name__", variableName);
-    ((Base)expObject).setExistedEnv(assignedObject.getExistedEnv());
+    ((Base) expObject).writeAttr("__name__", variableName);
+    ((Base) expObject).setExistedEnv(assignedObject.getExistedEnv());
     if (existedEnv.containsKey(variableName)) {
       existedEnv.replace(variableName, expObject);
     } else {
@@ -128,7 +128,7 @@ public class ExprStmtExecutor extends Executor {
           value = -((Float) value);
         }
 
-        ((Instance)operand).writeAttr("__value__", value);
+        ((Instance) operand).writeAttr("__value__", value);
         return operand;
       }
 
@@ -192,16 +192,15 @@ public class ExprStmtExecutor extends Executor {
   }
 
   // Set of arithmetic operator node types.
-  private static final EnumSet<ICodeNodeType> ARITH_OPS = EnumSet.of(ADD_OP, SUB_OP, MULTIPLY_OP,
-      FLOAT_DIVIDE_OP, INTEGER_DIVIDE_OP, MOD_OP, POWER_OP);
+  private static final EnumSet<ICodeNodeType> ARITH_OPS = EnumSet.of(ADD_OP, SUB_OP, MULTIPLY_OP, FLOAT_DIVIDE_OP, INTEGER_DIVIDE_OP, MOD_OP, POWER_OP);
 
   /**
    * Execute a binary operator.
    *
-   * @param node     the root node of the expression.
+   * @param node the root node of the expression.
    * @return the computed value of the expression.
    */
-  private Object executeComparisonExpression(ICodeNode node, Dictionary environment) throws Exception{
+  private Object executeComparisonExpression(ICodeNode node, Dictionary environment) throws Exception {
     // Get the two operand children of the operator node.
     ICodeNodeType nodeType = node.getType();
     ArrayList<ICodeNode> children = node.getChildren();
@@ -291,7 +290,7 @@ public class ExprStmtExecutor extends Executor {
             arithResult = value1 * value2;
             break;
           case INTEGER_DIVIDE_OP: {
-            arithResult = (int)(value1 / value2);
+            arithResult = (int) (value1 / value2);
             break;
           }
           case FLOAT_DIVIDE_OP: {
@@ -300,7 +299,7 @@ public class ExprStmtExecutor extends Executor {
               arithResult = value1 / value2;
             } else {
               errorHandler.flag(node, DIVISION_BY_ZERO, this);
-              arithResult =  0.0f;
+              arithResult = 0.0f;
             }
             break;
           }
@@ -318,22 +317,22 @@ public class ExprStmtExecutor extends Executor {
       // Integer operands.
       switch(nodeType) {
         case EQ_OP:
-          arithResult =  value1 == value2;
+          arithResult = value1 == value2;
           break;
         case NE_OP:
-          arithResult =  value1 != value2;
+          arithResult = value1 != value2;
           break;
         case LT_OP:
-          arithResult =  value1 < value2;
+          arithResult = value1 < value2;
           break;
         case LE_OP:
-          arithResult =  value1 <= value2;
+          arithResult = value1 <= value2;
           break;
         case GT_OP:
-          arithResult =  value1 > value2;
+          arithResult = value1 > value2;
           break;
         case GE_OP:
-          arithResult =  value1 >= value2;
+          arithResult = value1 >= value2;
           break;
       }
     } else {
@@ -343,22 +342,22 @@ public class ExprStmtExecutor extends Executor {
       // Float operands.
       switch(nodeType) {
         case EQ_OP:
-          arithResult =  value1 == value2;
+          arithResult = value1 == value2;
           break;
         case NE_OP:
-          arithResult =  value1 != value2;
+          arithResult = value1 != value2;
           break;
         case LT_OP:
-          arithResult =  value1 < value2;
+          arithResult = value1 < value2;
           break;
         case LE_OP:
-          arithResult =  value1 <= value2;
+          arithResult = value1 <= value2;
           break;
         case GT_OP:
-          arithResult =  value1 > value2;
+          arithResult = value1 > value2;
           break;
         case GE_OP:
-          arithResult =  value1 >= value2;
+          arithResult = value1 >= value2;
           break;
       }
     }
@@ -367,6 +366,7 @@ public class ExprStmtExecutor extends Executor {
 
   /**
    * Used to get the value of object
+   *
    * @param value the object from which used to get value.
    * @return the value of object
    */
@@ -394,7 +394,7 @@ public class ExprStmtExecutor extends Executor {
       return currentObject;
     }
 
-    for (int i = 1; i < children.size(); ++ i) {
+    for (int i = 1; i < children.size(); ++i) {
       ICodeNode child = children.get(i);
       ICodeNodeType nodeType = child.getType();
 
@@ -414,13 +414,13 @@ public class ExprStmtExecutor extends Executor {
             currentObject = method.callMethod(arguments);
             currentEnv = ((Base) currentObject).getFields();
           } else if (currentObject instanceof PredefinedFuncInstance) {
-            PredefinedFuncInstance method = (PredefinedFuncInstance)currentObject;
+            PredefinedFuncInstance method = (PredefinedFuncInstance) currentObject;
             ICodeNode argumentsNode = child.getChildren().get(0);
             ArrayList<Object> arguments = executeArguList(argumentsNode, environment);
             currentObject = method.callMethod(arguments);
-            currentEnv = ((Base)currentObject).getFields();
-          } else{
-            Class cls = (Class)currentObject;
+            currentEnv = ((Base) currentObject).getFields();
+          } else {
+            Class cls = (Class) currentObject;
             currentObject = new Instance(cls, new Dictionary(), cls.getFields(), currentEnv);
             currentEnv = ((Instance) currentObject).getFields();
           }
@@ -469,13 +469,13 @@ public class ExprStmtExecutor extends Executor {
 
     switch(nodeType) {
       case IDENTIFIER_OPERAND: {
-        String identifierName = (String)node.getAttribute(IDENTIFIER_NAME);
+        String identifierName = (String) node.getAttribute(IDENTIFIER_NAME);
         Object identifier = environment.readField(identifierName);
 
         if (identifier == null) {
           identifier = new Instance(TMPTYPE, new Dictionary(), environment, environment);
         }
-        ((Base)identifier).writeAttr("__name__", node.getAttribute(IDENTIFIER_NAME));
+        ((Base) identifier).writeAttr("__name__", node.getAttribute(IDENTIFIER_NAME));
         return identifier;
       }
 
