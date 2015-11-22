@@ -1,12 +1,14 @@
 package interpreter.executors;
 
 import static intermediate.ICodeNodeType.ELSE_BRANCH;
+import static intermediate.ICodeNodeType.POWER_OP;
 import static objectmodel.predefined.PredefinedConstant.NONE;
 
 import intermediate.ICodeNode;
 import intermediate.ICodeNodeType;
 import objectmodel.baseclasses.Instance;
 import objectmodel.dictionary.Dictionary;
+import interpreter.exception.ReturnFlowException;
 
 import java.util.ArrayList;
 
@@ -24,7 +26,8 @@ public class IfStmtExecutor extends StmtExecutor {
    * @param environment environment that used to execute if statement
    * @return the result of execute if statement
    */
-  public Object execute(ICodeNode iCodeNode, Dictionary environment) {
+  public Object execute(ICodeNode iCodeNode, Dictionary environment)
+      throws ReturnFlowException {
     ExprStmtExecutor expressionStatementExecutor = new ExprStmtExecutor();
     StmtExecutor statementExecutor = new StmtExecutor();
     ArrayList<ICodeNode> branches = iCodeNode.getChildren();
@@ -58,6 +61,8 @@ public class IfStmtExecutor extends StmtExecutor {
           executeResult = statementExecutor.execute(bodyNode, environment);
           break;
         }
+      } catch(ReturnFlowException e) {
+        throw e;
       } catch(Exception e) {
         System.out.println(e);
       }
