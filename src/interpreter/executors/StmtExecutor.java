@@ -6,6 +6,7 @@ import static intermediate.ICodeNodeType.RETURN_STATEMENT;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 import static interpreter.RuntimeErrorCode.UNIMPLEMENTED_FEATURE;
 
+import interpreter.exception.ReturnFlowException;
 import message.Message;
 import interpreter.Executor;
 import intermediate.ICodeNode;
@@ -30,7 +31,8 @@ public class StmtExecutor extends Executor {
    * @param node the root node of the statement.
    * @return null.
    */
-  public Object execute(ICodeNode node, Dictionary environment) {
+  public Object execute(ICodeNode node, Dictionary environment)
+      throws ReturnFlowException {
     ICodeNodeType nodeType = node.getType();
     Object result = NO_PRINT;
 
@@ -63,8 +65,9 @@ public class StmtExecutor extends Executor {
 
           for (ICodeNode statement : statements) {
             result = statementExecutor.execute(statement, environment);
-            if (statement.getType() == RETURN_STATEMENT)
-              break;
+            if (statement.getType() == RETURN_STATEMENT) {
+              throw new ReturnFlowException(result);
+            }
           }
           break;
         }
@@ -96,6 +99,8 @@ public class StmtExecutor extends Executor {
           return NO_PRINT;
         }
       }
+    } catch(ReturnFlowException e) {
+      throw e;
     } catch(Exception e) {
       return result;
     }
