@@ -139,7 +139,7 @@ public class Base {
    * @param value     the value of the field name to be write into the dict
    */
   private void writeDict(String fieldName, Object value) {
-    if (fields.contains(fieldName)) {
+    if (fields.containsKey(fieldName)) {
       fields.replace(fieldName, value);
     } else {
       fields.put(fieldName, value);
