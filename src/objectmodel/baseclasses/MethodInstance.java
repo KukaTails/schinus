@@ -70,6 +70,7 @@ public class MethodInstance extends Instance {
       for (ICodeNode statement : statements) {
         if (statement.getType() == RETURN_STATEMENT) {
           result = statementExecutor.execute(statement, getFields());
+          throw new ReturnFlowException(result);
         } else {
           statementExecutor.execute(statement, getFields());
         }
