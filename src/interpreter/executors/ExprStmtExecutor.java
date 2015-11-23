@@ -60,10 +60,10 @@ public class ExprStmtExecutor extends Executor {
 
     Base assignedObject = (Base) executeTest(assignedNode, environment);
     Dictionary existedEnv = ((Base) assignedObject).getExistedEnv();
-    String variableName = (String) ((Base) assignedObject).readAttribute("__name__");
+    String variableName = (String) ((Base) assignedObject).readAttribute("__referenced_name__");
     Object expObject = executeTest(expNode, environment);
 
-    ((Base) expObject).writeAttr("__name__", variableName);
+    assignedObject.getFields().remove("__referenced_name__");
     ((Base) expObject).setExistedEnv(assignedObject.getExistedEnv());
     if (existedEnv.containsKey(variableName)) {
       existedEnv.replace(variableName, expObject);
@@ -409,8 +409,14 @@ public class ExprStmtExecutor extends Executor {
 
           if (currentObject instanceof MethodInstance) {
             MethodInstance method = (MethodInstance) currentObject;
-            ICodeNode argumentsNode = child.getChildren().get(0);
-            ArrayList<Object> arguments = executeArguList(argumentsNode, environment);
+
+            ArrayList<ICodeNode> argumentsNode = child.getChildren();
+            ArrayList<Object> arguments = new ArrayList<>();
+
+            if (argumentsNode.size() != 0) {
+              ICodeNode argumentsList = child.getChildren().get(0);
+              arguments = executeArguList(argumentsList, environment);
+            }
             currentObject = method.callMethod(arguments);
             currentEnv = ((Base) currentObject).getFields();
           } else if (currentObject instanceof PredefinedFuncInstance) {
@@ -474,8 +480,9 @@ public class ExprStmtExecutor extends Executor {
 
         if (identifier == null) {
           identifier = new Instance(TMPTYPE, new Dictionary(), environment, environment);
+          ((Base) identifier).writeAttr("__name__", node.getAttribute(IDENTIFIER_NAME));
         }
-        ((Base) identifier).writeAttr("__name__", node.getAttribute(IDENTIFIER_NAME));
+        ((Base)identifier).writeAttr("__referenced_name__", node.getAttribute(IDENTIFIER_NAME));
         return identifier;
       }
 
