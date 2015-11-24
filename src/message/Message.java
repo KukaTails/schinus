@@ -18,16 +18,10 @@ public class Message {
     this.body = body;
   }
 
-  /**
-   * @return the type of message
-   */
   public MessageType getType() {
     return type;
   }
 
-  /**
-   * @return the body of message
-   */
   public Object getBody() {
     return body;
   }
