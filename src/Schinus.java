@@ -81,12 +81,10 @@ public class Schinus {
     String filePath = null;
     String flags = null;
 
-    // get Flags.
     for (; (i < args.length) && (args[i].charAt(0) == '-'); ++i) {
       flags += args[i].substring(1);
     }
 
-    // Source path.
     if (i < args.length) {
       filePath = args[i];
     }
