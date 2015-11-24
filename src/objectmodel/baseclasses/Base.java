@@ -8,10 +8,6 @@ import objectmodel.dictionary.Dictionary;
  * <p>The base class that all of the object model classes inherit from.</p>
  */
 public class Base {
-  /* Every object has a class in object model.
-   * If the object is a instance in object model, the className should be the class of instance.
-   * If the object is a class in object model, the className should be the metaclass of class.
-   */
   private Class className;        // all objects is an instance of class
   private Dictionary fields;      // both class and instance has a dict
   private Dictionary existedEnv;  // environment which contains the object
@@ -29,30 +25,18 @@ public class Base {
     this.existedEnv = existedEnv;
   }
 
-  /**
-   * @return the class name
-   */
   public Class getClassName() {
     return className;
   }
 
-  /**
-   * @param className the classname to be set.
-   */
   public void setClassName(Class className) {
     this.className = className;
   }
 
-  /**
-   * @return the fields
-   */
   public Dictionary getFields() {
     return fields;
   }
 
-  /**
-   * @return the environment which contains the object.
-   */
   public Dictionary getExistedEnv() {
     return existedEnv;
   }
@@ -100,13 +84,6 @@ public class Base {
    * @return True or False
    */
   public boolean isInstanceOf(Class className) {
-    /**
-     * if the object is a instance of user-define class, then find the class of the instance
-     * and the superclass of the class which it belongs to.
-     *
-     * if the object is a class object, then find the class object's class - TYPE, TYPE have no
-     * supper class.
-     */
     return this.className.isSubclass(className);
   }
 
@@ -118,7 +95,6 @@ public class Base {
    */
   public Object callMethod(String methodName, Object[] arguments) {
     Object method  = readAttribute(methodName);
-    //return ((MethodInstance)method).callMethod(); // TODO
     return null;
   }
 
