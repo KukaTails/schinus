@@ -30,6 +30,10 @@ public class ExprStmtParser extends StatementParser {
     super(parent);
   }
 
+
+  private static final EnumSet<TokenType> EXPR_START_SET = EnumSet.of(NOT, ADD, SUB, LEFT_PAREN, IDENTIFIER,
+      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
+
   /**
    * Parse an expression.
    *
@@ -39,6 +43,7 @@ public class ExprStmtParser extends StatementParser {
    */
   @Override
   public ICodeNode parse(Token token) throws Exception {
+    token = synchronize(EXPR_START_SET);
     ICodeNode expressionNode = parseTest(token);
 
     if (currentToken().getType() == ASSIGN) {
@@ -224,6 +229,10 @@ public class ExprStmtParser extends StatementParser {
     ADD_OPS_OPS_MAP.put(SUB, SUB_OP);
   }
 
+
+  private static final EnumSet<TokenType> ARITH_EXPR_START = EnumSet.of(ADD, SUB, LEFT_PAREN,
+      IDENTIFIER, INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
+
   /**
    * Parse a arithmetic expression.
    *
@@ -233,6 +242,7 @@ public class ExprStmtParser extends StatementParser {
    */
   private ICodeNode parseArithExpression(Token token) throws Exception {
     // Parse a term and make the root of its tree the root node.
+    synchronize(ARITH_EXPR_START);
     ICodeNode rootNode = parseTerm(token);
 
     TokenType tokenType = currentToken().getType();
@@ -309,6 +319,8 @@ public class ExprStmtParser extends StatementParser {
     return rootNode;
   }
 
+  private static final EnumSet<TokenType> FACTOR_START = EnumSet.of(ADD, SUB, LEFT_PAREN,
+      IDENTIFIER, INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
   /**
    * Parse a factor.
    *
@@ -319,6 +331,7 @@ public class ExprStmtParser extends StatementParser {
   private ICodeNode parseFactor(Token token) throws Exception {
     ICodeNode factorNode;
 
+    synchronize(FACTOR_START);
     if (token.getType() == ADD || token.getType() == SUB) {
       if (token.getType() == SUB) {
         factorNode = ICodeFactory.createICodeNode(NEGATE_OP);
@@ -336,6 +349,9 @@ public class ExprStmtParser extends StatementParser {
     return factorNode;
   }
 
+
+  private static final EnumSet<TokenType> POWER_START = EnumSet.of(LEFT_PAREN, IDENTIFIER,
+      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
   /**
    * Parse a power.
    *
@@ -344,6 +360,7 @@ public class ExprStmtParser extends StatementParser {
    * @throws Exception if an error occurred.
    */
   private ICodeNode parsePower(Token token) throws Exception {
+    synchronize(POWER_START);
     ICodeNode rootNode = parseAtomExpr(token);
 
     if (currentToken().getType() == POWER) {
@@ -365,9 +382,14 @@ public class ExprStmtParser extends StatementParser {
    * @return the intermediate code node of atom expression.
    * @throws Exception if an error occurred.
    */
+
+  private static final EnumSet<TokenType> ATOMEXPR_START = EnumSet.of(LEFT_PAREN,
+      IDENTIFIER, INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
+
   private ICodeNode parseAtomExpr(Token token) throws Exception {
     ICodeNode rootNode = ICodeFactory.createICodeNode(ATOM_EXPR_NODE);
 
+    synchronize(ATOMEXPR_START);
     rootNode.addChild(parseAtom(token));
     while ((token = currentToken()).getType() == LEFT_PAREN || token.getType() == DOT
         || token.getType() == LEFT_BRACKET) {
@@ -383,9 +405,14 @@ public class ExprStmtParser extends StatementParser {
    * @return the intermediate code node of atom.
    * @throws Exception if an error occurred.
    */
+
+  private static final EnumSet<TokenType> ATOM_START = EnumSet.of(LEFT_PAREN, IDENTIFIER,
+      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
+
   private ICodeNode parseAtom(Token token) throws Exception {
     ICodeNode rootNode = null;
 
+    synchronize(ATOM_START);
     switch (token.getType()) {
       case LEFT_PAREN: {
         token = match(LEFT_PAREN);  // consume the (
