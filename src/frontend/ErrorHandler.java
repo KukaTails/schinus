@@ -46,7 +46,6 @@ public class ErrorHandler {
    * @param parser    the parser which send message to its listeners
    */
   public void abortTranslation(ErrorCode errorCode, Parser parser) {
-    // Notify the parser's listeners and then abort
     String fatalText = "FATAL ERROR: " + errorCode.toString();
     parser.sendMessage(new Message(SYNTAX_ERROR, new Object[] {0, 0, "", fatalText}));
     System.exit(errorCode.getStatus());
