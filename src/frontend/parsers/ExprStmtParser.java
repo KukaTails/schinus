@@ -30,10 +30,6 @@ public class ExprStmtParser extends StatementParser {
     super(parent);
   }
 
-
-  private static final EnumSet<TokenType> EXPR_START_SET = EnumSet.of(NOT, ADD, SUB, LEFT_PAREN, IDENTIFIER,
-      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
-
   /**
    * Parse an expression.
    *
@@ -41,6 +37,9 @@ public class ExprStmtParser extends StatementParser {
    * @return the root node of the generated parse tree.
    * @throws Exception if an error occurred.
    */
+  private static final EnumSet<TokenType> EXPR_START_SET = EnumSet.of(NOT, ADD, SUB, LEFT_PAREN, IDENTIFIER,
+      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
+
   @Override
   public ICodeNode parse(Token token) throws Exception {
     token = synchronize(EXPR_START_SET);
@@ -231,7 +230,7 @@ public class ExprStmtParser extends StatementParser {
 
 
   private static final EnumSet<TokenType> ARITH_EXPR_START = EnumSet.of(ADD, SUB, LEFT_PAREN,
-      IDENTIFIER, INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
+      IDENTIFIER, INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
 
   /**
    * Parse a arithmetic expression.
@@ -320,7 +319,7 @@ public class ExprStmtParser extends StatementParser {
   }
 
   private static final EnumSet<TokenType> FACTOR_START = EnumSet.of(ADD, SUB, LEFT_PAREN,
-      IDENTIFIER, INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
+      IDENTIFIER, INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
   /**
    * Parse a factor.
    *
@@ -351,7 +350,7 @@ public class ExprStmtParser extends StatementParser {
 
 
   private static final EnumSet<TokenType> POWER_START = EnumSet.of(LEFT_PAREN, IDENTIFIER,
-      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
+      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
   /**
    * Parse a power.
    *
@@ -384,7 +383,7 @@ public class ExprStmtParser extends StatementParser {
    */
 
   private static final EnumSet<TokenType> ATOMEXPR_START = EnumSet.of(LEFT_PAREN,
-      IDENTIFIER, INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
+      IDENTIFIER, INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
 
   private ICodeNode parseAtomExpr(Token token) throws Exception {
     ICodeNode rootNode = ICodeFactory.createICodeNode(ATOM_EXPR_NODE);
@@ -407,12 +406,12 @@ public class ExprStmtParser extends StatementParser {
    */
 
   private static final EnumSet<TokenType> ATOM_START = EnumSet.of(LEFT_PAREN, IDENTIFIER,
-      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE, TRUE, FALSE);
+      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
 
   private ICodeNode parseAtom(Token token) throws Exception {
     ICodeNode rootNode = null;
 
-    synchronize(ATOM_START);
+    token = synchronize(ATOM_START);
     switch (token.getType()) {
       case LEFT_PAREN: {
         token = match(LEFT_PAREN);  // consume the (
@@ -468,11 +467,11 @@ public class ExprStmtParser extends StatementParser {
         break;
       }
 
-      case TRUE:
-      case FALSE: {
+      case TRUE_TOKEN:
+      case FALSE_TOKEN: {
         rootNode = ICodeFactory.createICodeNode(BOOLEAN_CONSTANT_OPERAND);
 
-        if (token.getType() == TRUE) {
+        if (token.getType() == TRUE_TOKEN) {
           rootNode.setAttribute(VALUE, true);
         } else {
           rootNode.setAttribute(VALUE, false);
@@ -481,9 +480,9 @@ public class ExprStmtParser extends StatementParser {
         break;
       }
 
-      case NONE: {
+      case NONE_TOKEN: {
         rootNode = ICodeFactory.createICodeNode(NONE_OPERAND);
-        match(NONE);
+        match(NONE_TOKEN);
         break;
       }
 
@@ -503,7 +502,12 @@ public class ExprStmtParser extends StatementParser {
    * @return the intermediate code node of trailer.
    * @throws Exception if an error occurred.
    */
+  private static final EnumSet<TokenType> TRAILER_FIRST_SET = EnumSet.of(LEFT_PAREN, LEFT_BRACKET, DOT);
+  private static final EnumSet<TokenType> TRAILER_FOLLOW_SET = EnumSet.of(END_OF_LINE, ASSIGN, LOGICAL_OR, LOGICAL_AND, LESS_THAN, GREAT_THAN, EQUAL, GREAT_EQUAL, LESS_EQUAL, NOT_EQUAL, ADD, SUB, MUL, FLOAT_DIV, INTEGER_DIV, MOD, POWER, LEFT_PAREN, LEFT_BRACKET, DOT, RIGHT_BRACKET, RIGHT_PAREN, COMMA);
+
   private ICodeNode parseTrailer(Token token) throws Exception {
+    synchronize(TRAILER_FIRST_SET);
+
     if (token.getType() == LEFT_PAREN) {
       ICodeNode argsTrailerNode = ICodeFactory.createICodeNode(ARGUMENTS_TRAILER);
 
@@ -512,6 +516,7 @@ public class ExprStmtParser extends StatementParser {
         argsTrailerNode.addChild(parseArguList(token));
       }
       match(RIGHT_PAREN);  // consume RIGHT_PAREN
+      synchronize(TRAILER_FOLLOW_SET);
 
       return argsTrailerNode;
     } else if (token.getType() == LEFT_BRACKET) {
@@ -522,6 +527,7 @@ public class ExprStmtParser extends StatementParser {
         subscriptTrailerNode.addChild(parseSubscriptList(token));
       }
       match(RIGHT_BRACKET);  // consume RIGHT_BRACKET
+      synchronize(TRAILER_FOLLOW_SET);
 
       return subscriptTrailerNode;
     } else if (token.getType() == DOT) {
@@ -530,9 +536,12 @@ public class ExprStmtParser extends StatementParser {
       token = match(DOT);  // consume DOT
       fieldTrailerNode.setAttribute(FIELD_NAME, token.getText());
       match(IDENTIFIER);  // consume field name
+      synchronize(TRAILER_FOLLOW_SET);
+
       return fieldTrailerNode;
     } else {
       errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+      synchronize(TRAILER_FOLLOW_SET);
       return ICodeFactory.createICodeNode(ERROR_NODE);
     }
   }
@@ -544,9 +553,13 @@ public class ExprStmtParser extends StatementParser {
    * @return intermediate code node of argument list.
    * @throws Exception if an error occurred.
    */
+  private static final EnumSet<TokenType> ARGULIST_FIRST_SET = EnumSet.of(NOT, ADD, LEFT_PAREN, IDENTIFIER, INTEGER_CONSTANT,
+      FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
+
   private ICodeNode parseArguList(Token token) throws Exception {
     ICodeNode arguListNode = ICodeFactory.createICodeNode(ARGUMENTS_LIST_NODE);
 
+    synchronize(ARGULIST_FIRST_SET);
     arguListNode.addChild(parseArgument(token));
     while (currentToken().getType() == COMMA) {
       token = match(COMMA);  // consume COMMA
