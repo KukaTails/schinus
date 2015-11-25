@@ -18,8 +18,6 @@ public class ICodeNode extends HashMap<ICodeKey, Object> {
   private ArrayList<ICodeNode> children;  // children array list
 
   /**
-   * Constructor.
-   *
    * @param type the node type whose name will be the name of this node.
    */
   public ICodeNode(ICodeNodeType type) {
@@ -28,20 +26,10 @@ public class ICodeNode extends HashMap<ICodeKey, Object> {
     this.children = new ArrayList<ICodeNode>();
   }
 
-  /**
-   * Getter.
-   *
-   * @return the node type.
-   */
   public ICodeNodeType getType() {
     return type;
   }
 
-  /**
-   * Return the parent of this node.
-   *
-   * @return the parent node.
-   */
   public ICodeNode getParent() {
     return parent;
   }
@@ -60,11 +48,6 @@ public class ICodeNode extends HashMap<ICodeKey, Object> {
     return node;
   }
 
-  /**
-   * Return an array list of this node's children.
-   *
-   * @return the array list of children.
-   */
   public ArrayList<ICodeNode> getChildren() {
     return children;
   }
@@ -113,7 +96,7 @@ public class ICodeNode extends HashMap<ICodeKey, Object> {
   /**
    * Set ICodeImpl's String is the type
    *
-   * @return
+   * @return the string of type
    */
   public String toString() {
     return type.toString();

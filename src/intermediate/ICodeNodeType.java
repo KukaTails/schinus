@@ -58,7 +58,4 @@ public enum ICodeNodeType {
 
   // code node for error handle
   ERROR_NODE,
-
-  // WAIT TO DELETE
-  VARIABLE_OPERAND, VARIABLE_FIELD, FIELD
 }
