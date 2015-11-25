@@ -1,15 +1,16 @@
 package frontend.parsers;
 
-import static frontend.TokenType.END;
-import static frontend.TokenType.WHILE;
-import static frontend.TokenType.END_OF_LINE;
+import static frontend.TokenType.*;
 import static intermediate.ICodeNodeType.WHILE_STATEMENT;
 import static intermediate.ICodeNodeType.COMPOUND_STATEMENT;
 
 import frontend.Token;
 import frontend.Parser;
+import frontend.TokenType;
 import intermediate.ICodeNode;
 import intermediate.ICodeFactory;
+
+import java.util.EnumSet;
 
 /**
  * <h1>WhileStatementParser</h1>
@@ -24,6 +25,8 @@ public class WhileStmtParser extends StatementParser {
     super(parent);
   }
 
+  private static final EnumSet<TokenType> TEST_FIRST_SET = EnumSet.of(NOT, ADD, SUB, LEFT_PAREN, IDENTIFIER,
+      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
   /**
    * Parse while statement and return intermediate code node of while statement.
    *
@@ -39,6 +42,8 @@ public class WhileStmtParser extends StatementParser {
 
     // parse expression statement of while
     ExprStmtParser expressionParser = new ExprStmtParser(this);
+
+    token = synchronize(TEST_FIRST_SET);
     ICodeNode expression = expressionParser.parseExpr(token);
     iCodeNode.addChild(expression);
 
