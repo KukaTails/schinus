@@ -49,9 +49,9 @@ public class Source implements MessageProducer {
 
   /**
    * @return the source character at the current position.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public char currentChar() throws Exception {
+  public char currentChar() throws IOException {
     // First time?
     if (currentPos == -2) {
       readLine();
@@ -80,9 +80,9 @@ public class Source implements MessageProducer {
    * Consume the current source character and return the next character.
    *
    * @return the next source character.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public char nextChar() throws Exception {
+  public char nextChar() throws IOException {
     ++currentPos;
     return currentChar();
   }
@@ -92,9 +92,9 @@ public class Source implements MessageProducer {
    * consuming the current character.
    *
    * @return the following character.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public char peekChar() throws Exception {
+  public char peekChar() throws IOException {
     currentChar();
     if (line == null) {
       return EOF;
@@ -106,17 +106,17 @@ public class Source implements MessageProducer {
 
   /**
    * @return true if at the end of the line, else return false.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public boolean atEol() throws Exception {
+  public boolean atEol() throws IOException {
     return (line != null) && (currentPos == line.length());
   }
 
   /**
    * @return true if at the end of the file, else return false.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public boolean atEof() throws Exception {
+  public boolean atEof() throws IOException {
     // First time?
     if (currentPos == -2) {
       readLine();
@@ -129,9 +129,9 @@ public class Source implements MessageProducer {
    * Skip the rest of the current input line
    * by forcing the next read to read a new line.
    *
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public void skipToNextLine() throws Exception {
+  public void skipToNextLine() throws IOException {
     if (line != null) {
       currentPos = line.length() + 1;
     }
@@ -160,9 +160,9 @@ public class Source implements MessageProducer {
   /**
    * Close the source.
    *
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public void close() throws Exception {
+  public void close() throws IOException {
     if (reader != null) {
       try {
         reader.close();
@@ -172,6 +172,7 @@ public class Source implements MessageProducer {
       }
     }
   }
+
 
   /**
    * Add a parser message listener.

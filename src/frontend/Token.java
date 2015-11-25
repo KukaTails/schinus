@@ -1,5 +1,7 @@
 package frontend;
 
+import java.io.IOException;
+
 /**
  * <h1>Token</h1>
  * <p>
@@ -15,9 +17,9 @@ public class Token {
 
   /**
    * @param source the source from where to fetch the token's characters.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public Token(Source source) throws Exception {
+  public Token(Source source) throws IOException {
     this.source = source;
     this.lineNum = source.getLineNum();
     this.position = source.getPosition();
@@ -66,9 +68,9 @@ public class Token {
    * tokens.  After extracting the token, the current source line position
    * will be one beyond the last token character.
    *
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  protected void extract() throws Exception {
+  protected void extract() throws IOException {
     text = Character.toString(currentChar());
     value = null;
 
@@ -77,25 +79,25 @@ public class Token {
 
   /**
    * @return the current character from the source.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  protected char currentChar() throws Exception {
+  protected char currentChar() throws IOException {
     return source.currentChar();
   }
 
   /**
    * @return the next character from the source after moving forward.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  protected char nextChar() throws Exception {
+  protected char nextChar() throws IOException {
     return source.nextChar();
   }
 
   /**
    * @return the next character from the source without moving forward.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  protected char peekChar() throws Exception {
+  protected char peekChar() throws IOException {
     return source.peekChar();
   }
 }

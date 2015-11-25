@@ -10,6 +10,8 @@ import frontend.tokens.NumberToken;
 import frontend.tokens.StringToken;
 import frontend.tokens.SpecialSymbolToken;
 
+import java.io.IOException;
+
 /**
  * <h1>Scanner</h1>
  * <p>
@@ -35,9 +37,9 @@ public class Scanner {
 
   /**
    * @return the next token.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public Token nextToken() throws Exception {
+  public Token nextToken() throws IOException {
     currentToken = extractToken();
     return currentToken;
   }
@@ -46,9 +48,9 @@ public class Scanner {
    * Do the actual work of extracting and returning the next token from the source.
    *
    * @return the next token.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  protected Token extractToken() throws Exception {
+  protected Token extractToken() throws IOException {
     skipWhiteSpace();
 
     Token token;
@@ -89,40 +91,40 @@ public class Scanner {
 
   /**
    * @return the current character from the source.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public char currentChar() throws Exception {
+  public char currentChar() throws IOException {
     return source.currentChar();
   }
 
   /**
    * @return the next character from the source.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public char nextChar() throws Exception {
+  public char nextChar() throws IOException {
     return source.nextChar();
   }
 
   /**
    * @return true if at the end of the source line, else return false.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public boolean atEol() throws Exception {
+  public boolean atEol() throws IOException {
     return source.atEol();
   }
 
   /**
    * @return true if at the end of the source file, else return false.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public boolean atEof() throws Exception {
+  public boolean atEof() throws IOException {
     return source.atEof();
   }
 
   /**
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public void skipToNextLine() throws Exception {
+  public void skipToNextLine() throws IOException {
     source.skipToNextLine();
   }
 
@@ -131,9 +133,9 @@ public class Scanner {
    * Skip whitespace characters by consuming them.
    * A comment is whitespace.
    *
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  private void skipWhiteSpace() throws Exception {
+  private void skipWhiteSpace() throws IOException {
     char currentChar = currentChar();
 
     while ((currentChar != '\n') && (Character.isWhitespace(currentChar)

@@ -61,7 +61,7 @@ public class Parser implements MessageProducer {
   /**
    * Parse a source program and generate the intermediate code.
    *
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
   public ICodeNode parse() throws Exception {
     StatementParser statementParser = new StatementParser(this);
@@ -82,9 +82,9 @@ public class Parser implements MessageProducer {
    * match expected token and get the next token.
    * @param expectedTokenType the type of expected token.
    * @return the next token.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public Token match(TokenType expectedTokenType) throws Exception {
+  public Token match(TokenType expectedTokenType) throws IOException {
     if (currentToken().getType() != expectedTokenType)
       errorHandler.flag(currentToken(), UNEXPECTED_TOKEN, this);
     return nextToken();
@@ -94,9 +94,9 @@ public class Parser implements MessageProducer {
    * Synchronize the parser.
    * @param syncSet the set of token types for synchronizing the parser.
    * @return the token where the parser has synchronized.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public Token synchronize(EnumSet syncSet) throws Exception {
+  public Token synchronize(EnumSet syncSet) throws IOException {
     Token token = currentToken();
 
     if (!syncSet.contains(token.getType())) {
@@ -135,9 +135,9 @@ public class Parser implements MessageProducer {
 
   /**
    * @return the next token.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public Token nextToken() throws Exception {
+  public Token nextToken() throws IOException {
     return scanner.nextToken();
   }
 

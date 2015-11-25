@@ -28,7 +28,7 @@ public enum TokenType {
   LOGICAL_AND("and"), LOGICAL_OR("or"), LOGICAL_NOT("not"),
 
   // boolean constant
-  FALSE("False"), TRUE("True"), NONE("None"),
+  FALSE_TOKEN("False"), TRUE_TOKEN("True"), NONE_TOKEN("None"),
 
   LET,   // assignment
   DEF,   // function define
