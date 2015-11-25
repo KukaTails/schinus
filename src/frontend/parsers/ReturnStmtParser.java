@@ -1,14 +1,11 @@
 package frontend.parsers;
 
-import static frontend.TokenType.END;
 import static frontend.TokenType.END_OF_LINE;
 import static frontend.TokenType.RETURN;
-import static intermediate.ICodeNodeType.EXPRESSION_NODE;
 import static intermediate.ICodeNodeType.RETURN_STATEMENT;
 
 import frontend.Token;
 import frontend.Parser;
-import intermediate.ICode;
 import intermediate.ICodeNode;
 import intermediate.ICodeFactory;
 
