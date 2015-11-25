@@ -1,5 +1,6 @@
 package interpreter.executors;
 
+import static frontend.TokenType.*;
 import static intermediate.ICodeKey.*;
 import static intermediate.ICodeNodeType.*;
 import static interpreter.RuntimeErrorCode.*;
@@ -7,6 +8,7 @@ import static objectmodel.predefined.PredefinedType.TMPTYPE;
 import static objectmodel.predefined.PredefinedConstant.NONE;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 
+import frontend.TokenType;
 import interpreter.Executor;
 import intermediate.ICodeNode;
 import intermediate.ICodeNodeType;
@@ -404,7 +406,7 @@ public class ExprStmtExecutor extends Executor {
           if (!(currentObject instanceof MethodInstance ||
               currentObject instanceof Class || currentObject instanceof PredefinedFuncInstance)) {
             errorHandler.flag(child, CALL_UNCALLABLE_OBJECT, this);
-            throw new NotCallableException();
+            throw new NotCallableException((String)child.getAttribute(IDENTIFIER_NAME));
           }
 
           if (currentObject instanceof MethodInstance) {
