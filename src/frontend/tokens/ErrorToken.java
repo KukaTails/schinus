@@ -6,6 +6,8 @@ import frontend.Token;
 import frontend.Source;
 import frontend.ErrorCode;
 
+import java.io.IOException;
+
 /**
  * <h1>ErrorToken</h1>
  * <p>
@@ -19,7 +21,8 @@ public class ErrorToken extends Token {
    * @param tokenText the text of the erroneous token.
    * @throws Exception if an error occurred.
    */
-  public ErrorToken(Source source, ErrorCode errorCode, String tokenText) throws Exception {
+  public ErrorToken(Source source, ErrorCode errorCode, String tokenText)
+      throws IOException {
     super(source);
 
     this.text = tokenText;
@@ -29,11 +32,10 @@ public class ErrorToken extends Token {
 
   /**
    * Do nothing. Do not consume any source characters.
-   *
    * @throws Exception if an error occurred.
    */
   @Override
-  protected void extract() throws Exception {
+  protected void extract() throws IOException {
 
   }
 }

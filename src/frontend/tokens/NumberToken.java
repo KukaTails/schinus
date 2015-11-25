@@ -10,6 +10,8 @@ import static frontend.ErrorCode.INVALID_NUMBER;
 import frontend.Token;
 import frontend.Source;
 
+import java.io.IOException;
+
 /**
  * <h1>NumberToken</h1>
  * <p>
@@ -21,18 +23,18 @@ public class NumberToken extends Token {
 
   /**
    * @param source the source from where to fetch the token's characters.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public NumberToken(Source source) throws Exception {
+  public NumberToken(Source source) throws IOException {
     super(source);
   }
 
   /**
    * Extract a number token of schinus language.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
   @Override
-  protected void extract() throws Exception {
+  protected void extract() throws IOException {
     StringBuilder textBuffer = new StringBuilder();  // token's characters
     extractNumber(textBuffer);
     text = textBuffer.toString();
@@ -42,9 +44,9 @@ public class NumberToken extends Token {
    * Extract a Pascal number token from the source.
    *
    * @param textBuffer the buffer to append the token's characters.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  protected void extractNumber(StringBuilder textBuffer) throws Exception {
+  protected void extractNumber(StringBuilder textBuffer) throws IOException {
     String wholeDigits = null;     // digits before the decimal point
     String fractionDigits = null;  // digits after the decimal point
     String exponentDigits = null;  // exponent digits
@@ -122,9 +124,9 @@ public class NumberToken extends Token {
    *
    * @param textBuffer the buffer to append the token's characters.
    * @return the string of digits.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  private String unsignedIntegerDigits(StringBuilder textBuffer) throws Exception {
+  private String unsignedIntegerDigits(StringBuilder textBuffer) throws IOException {
     char currentChar = currentChar();
 
     // Must have at least one digit.

@@ -8,6 +8,8 @@ import static frontend.ErrorCode.UNEXPECTED_EOF;
 import frontend.Token;
 import frontend.Source;
 
+import java.io.IOException;
+
 /**
  * <h1>StringToken</h1>
  * <p>
@@ -16,19 +18,19 @@ import frontend.Source;
 public class StringToken extends Token {
   /**
    * @param source the source from where to fetch the token's characters.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public StringToken(Source source) throws Exception {
+  public StringToken(Source source) throws IOException {
     super(source);
   }
 
   /**
    * Extract a Schinus language string token from the source.
    *
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
   @Override
-  protected void extract() throws Exception {
+  protected void extract() throws IOException {
     StringBuilder textBuffer = new StringBuilder();
     StringBuilder valueBuffer = new StringBuilder();
 

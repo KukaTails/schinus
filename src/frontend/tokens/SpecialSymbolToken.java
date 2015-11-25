@@ -8,6 +8,8 @@ import static frontend.ErrorCode.INVALID_CHARACTER;
 import frontend.Token;
 import frontend.Source;
 
+import java.io.IOException;
+
 /**
  * <h1>SpecialSymbolToken</h1>
  * <p>
@@ -16,19 +18,19 @@ import frontend.Source;
 public class SpecialSymbolToken extends Token {
   /**
    * @param source the source from where to fetch the token's characters.
-   * @throws Exception if an error occurred.
+   * @throws IOException if an error occurred.
    */
-  public SpecialSymbolToken(Source source) throws Exception {
+  public SpecialSymbolToken(Source source) throws IOException {
     super(source);
   }
 
   /**
    * Extract special symbol token from the source.
    *
-   * @throws Exception
+   * @throws IOException
    */
   @Override
-  protected void extract() throws Exception {
+  protected void extract() throws IOException {
     char firstChar = currentChar();
 
     text = Character.toString(firstChar);
