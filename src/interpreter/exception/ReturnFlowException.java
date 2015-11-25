@@ -1,10 +1,11 @@
 package interpreter.exception;
 
-public class ReturnFlowException extends Exception {
+/**
+ * <h1>ReturnFlowException</h1>
+ * <p>the control flow exception raised by return statement.</p>
+ */
+public class ReturnFlowException extends SchniusException {
   private Object returnValue;
-
-  public ReturnFlowException() {
-  }
 
   public ReturnFlowException(Object returnValue) {
     this.returnValue = returnValue;
