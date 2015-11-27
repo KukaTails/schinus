@@ -3,16 +3,18 @@ package frontend;
 import static frontend.ErrorCode.IO_ERROR;
 import static frontend.ErrorCode.UNEXPECTED_TOKEN;
 
-import frontend.tokens.EofToken;
 import message.Message;
 import message.MessageHandler;
 import message.MessageListener;
 import message.MessageProducer;
 import intermediate.ICodeNode;
+import frontend.tokens.EofToken;
 import frontend.parsers.StatementParser;
+import interpreter.exception.SchinusException;
+import interpreter.exception.SyntaxErrorException;
 
-import java.io.IOException;
 import java.util.EnumSet;
+import java.io.IOException;
 
 /**
  * <h1>Parser</h1>
@@ -60,10 +62,10 @@ public class Parser implements MessageProducer {
 
   /**
    * Parse a source program and generate the intermediate code.
-   *
    * @throws IOException if an error occurred.
    */
-  public ICodeNode parse() throws Exception {
+  public ICodeNode parse()
+      throws Exception {
     StatementParser statementParser = new StatementParser(this);
     Token token = currentToken();
     ICodeNode iCodeNode = null;
@@ -84,9 +86,14 @@ public class Parser implements MessageProducer {
    * @return the next token.
    * @throws IOException if an error occurred.
    */
-  public Token match(TokenType expectedTokenType) throws IOException {
-    if (currentToken().getType() != expectedTokenType)
+  public Token match(TokenType expectedTokenType)
+      throws IOException, SchinusException {
+    if (currentToken().getType() != expectedTokenType) {
       errorHandler.flag(currentToken(), UNEXPECTED_TOKEN, this);
+      nextToken();
+      scanner.skipToNextLine();
+      throw new SyntaxErrorException();
+    }
     return nextToken();
   }
 
@@ -96,7 +103,8 @@ public class Parser implements MessageProducer {
    * @return the token where the parser has synchronized.
    * @throws IOException if an error occurred.
    */
-  public Token synchronize(EnumSet syncSet) throws IOException {
+  public Token synchronize(EnumSet syncSet)
+      throws IOException {
     Token token = currentToken();
 
     if (!syncSet.contains(token.getType())) {
@@ -137,7 +145,8 @@ public class Parser implements MessageProducer {
    * @return the next token.
    * @throws IOException if an error occurred.
    */
-  public Token nextToken() throws IOException {
+  public Token nextToken()
+      throws IOException {
     return scanner.nextToken();
   }
 

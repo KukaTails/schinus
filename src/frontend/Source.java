@@ -55,7 +55,8 @@ public class Source implements MessageProducer {
     // First time?
     if (currentPos == -2) {
       readLine();
-      return nextChar();
+      nextChar();
+      return currentChar();
     }
     // At end of file?
     else if (line == null) {
@@ -68,7 +69,8 @@ public class Source implements MessageProducer {
     // Need to read the next line?
     else if (currentPos > line.length()) {
       readLine();
-      return nextChar();
+      nextChar();
+      return currentChar();
     }
     // Return the character at the current position.
     else {
@@ -123,6 +125,10 @@ public class Source implements MessageProducer {
     }
 
     return line == null;
+  }
+
+  public void addPosition() {
+    this.currentPos++;
   }
 
   /**
