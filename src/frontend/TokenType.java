@@ -10,19 +10,8 @@ import java.util.Hashtable;
 public enum TokenType {
   /* Reserved words. */
 
-  // type specifier
-  VOID, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE, SIGNED, UNSIGNED,
-  ENUM, UNION, STRUCT,
-
-  // type qualifier
-  CONST, VOLATILE,
-
-  // storage class
-  TYPEDEF, EXTERN, STATIC, AUTO, REGISTER,
-
   // control flow keyword
-  IF, ELIF, ELSE, DO, WHILE, FOR, GOTO, CONTINUE, BREAK,
-  SWITCH, CASE, RETURN, END,
+  IF, ELIF, ELSE, DO, WHILE, CONTINUE, BREAK, RETURN, END,
 
   // logical operators
   LOGICAL_AND("and"), LOGICAL_OR("or"), LOGICAL_NOT("not"),
@@ -30,13 +19,8 @@ public enum TokenType {
   // boolean constant
   FALSE_TOKEN("False"), TRUE_TOKEN("True"), NONE_TOKEN("None"),
 
-  LET,   // assignment
   DEF,   // function define
-  CALL,  // function call
   CLASS, // class define
-
-  // other keywords
-  DEFAULT, SIZEOF,
 
   // basic operators
   ADD("+"), SUB("-"), MUL("*"), POWER("**"), FLOAT_DIV("/"), INTEGER_DIV("//"), MOD("%"),
@@ -47,28 +31,13 @@ public enum TokenType {
   GREAT_EQUAL(">="), LESS_EQUAL("<="),
   EQUAL("=="), NOT("!"), NOT_EQUAL("!="),
 
-  // bit operators
-  BIT_AND("&"), BIT_XOR("^"), BIT_OR("|"), BIT_NOT("~"),
-  BIT_AND_ASSIGN("&="), BIT_XOR_ASSIGN("^="), BIT_OR_ASSIGN("|="),
-
-  // shift operators
-  LEFT_SHIFT("<<"), RIGHT_SHIFT(">>"),
-  LEFT_SHIFT_ASSIGN("<<="), RIGHT_SHIFT_ASSIGN(">>="),
-
-  // logical operators
-  // LOGICAL_NOT("!"), LOGICAL_AND(""), LOGICAL_OR("||"),
-
-  // condition operator
-  CONDITION("?"),
-
   // other operators
   ASSIGN("="), DOT("."),
   ELLIPSIS("..."),
 
   // other symbols
-  COLON(":"), COMMA(","), SEMICOLON(";"), END_OF_LINE("\n"),
+  COMMA(","), SEMICOLON(";"), END_OF_LINE("\n"),
   LEFT_PAREN("("), RIGHT_PAREN(")"), LEFT_BRACKET("["), RIGHT_BRACKET("]"),
-  LEFT_BRACE("{"), RIGHT_BRACE("}"),
 
   // other token types
   IDENTIFIER, FLOAT_CONSTANT, INTEGER_CONSTANT, CHAR_CONSTANT, STRING_LITERAL,
@@ -101,8 +70,8 @@ public enum TokenType {
     return text;
   }
 
-  private static final int FIRST_RESERVED_INDEX = VOID.ordinal();
-  private static final int LAST_RESERVED_INDEX = SIZEOF.ordinal();
+  private static final int FIRST_RESERVED_INDEX = IF.ordinal();
+  private static final int LAST_RESERVED_INDEX = CLASS.ordinal();
 
   // Set of lower-cased C reserved word text strings.
   public static Hashtable<String, TokenType> RESERVED_WORDS = new Hashtable<>();
@@ -115,7 +84,7 @@ public enum TokenType {
   }
 
   private static final int FIRST_SPECIAL_INDEX = ADD.ordinal();
-  private static final int LAST_SPECIAL_INDEX = RIGHT_BRACE.ordinal();
+  private static final int LAST_SPECIAL_INDEX = RIGHT_BRACKET.ordinal();
 
   // Hash table of C language special symbols.
   // Each special symbol's text is the key to its C language token type.
