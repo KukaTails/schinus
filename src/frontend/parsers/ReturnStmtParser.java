@@ -37,7 +37,6 @@ public class ReturnStmtParser extends StatementParser {
     ICodeNode exprNode = exprParser.parseExpr(token);
 
     iCodeNode.addChild(exprNode);
-    match(END_OF_LINE);
     return iCodeNode;
   }
 }

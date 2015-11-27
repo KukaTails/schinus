@@ -71,7 +71,6 @@ public class ClassDefStmtParser extends StatementParser {
     }
     iCodeNode.addChild(classBodyNode);
     match(END);
-    match(END_OF_LINE);
 
     return iCodeNode;
   }

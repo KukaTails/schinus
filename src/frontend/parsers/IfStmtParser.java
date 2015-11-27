@@ -13,8 +13,11 @@ import static intermediate.ICodeNodeType.COMPOUND_STATEMENT;
 
 import frontend.Token;
 import frontend.Parser;
+import frontend.TokenType;
 import intermediate.ICodeNode;
 import intermediate.ICodeFactory;
+
+import java.util.EnumSet;
 
 /**
  * <h1>IfStatementParser</h1>
@@ -24,6 +27,8 @@ public class IfStmtParser extends StatementParser {
   public IfStmtParser(Parser parent) {
     super(parent);
   }
+
+  private static final EnumSet<TokenType> TEST_FIRST_SET = ExprStmtParser.EXPR_FIRST_SET.clone();
 
   /**
    * @param token the token to start parse.
@@ -37,6 +42,7 @@ public class IfStmtParser extends StatementParser {
     StatementParser statementParser = new StatementParser(this);
 
     token = match(IF); // consume "if"
+    token = synchronize(TEST_FIRST_SET);
 
     ICodeNode ifBranchNode = ICodeFactory.createICodeNode(IF_BRANCH);
     ICodeNode ifExpressionNode = expressionParser.parseExpr(token);
@@ -59,6 +65,8 @@ public class IfStmtParser extends StatementParser {
       ICodeNode elifCompoundStatement = ICodeFactory.createICodeNode(COMPOUND_STATEMENT);
 
       token = match(ELIF); // consume "elif"
+      token = synchronize(TEST_FIRST_SET);
+
       ICodeNode elifExpressionNode = expressionParser.parseExpr(token);
       elifBranchNode.addChild(elifExpressionNode);
       // parse elif compound statements
@@ -92,7 +100,6 @@ public class IfStmtParser extends StatementParser {
     }
 
     match(END);
-    match(END_OF_LINE);
     return ifStatementNode;
   }
 }

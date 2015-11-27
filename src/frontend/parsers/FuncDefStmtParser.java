@@ -34,7 +34,7 @@ public class FuncDefStmtParser extends StatementParser {
   public ICodeNode parse(Token token) throws Exception {
     ICodeNode functionDefineNode = ICodeFactory.createICodeNode(FUNCTION_DEFINE_STATEMENT);
 
-    token = match(DEF); // consume "def"
+    token = match(DEF);
 
     ICodeNode functionNameNode = ICodeFactory.createICodeNode(FUNCTION_NAME);
     // parse the name of function
@@ -63,7 +63,6 @@ public class FuncDefStmtParser extends StatementParser {
     functionDefineNode.addChild(functionBodyNode);
 
     match(END);
-    match(END_OF_LINE);
     return functionDefineNode;
   }
 }

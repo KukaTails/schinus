@@ -37,12 +37,12 @@ public class ExprStmtParser extends StatementParser {
    * @return the root node of the generated parse tree.
    * @throws Exception if an error occurred.
    */
-  private static final EnumSet<TokenType> EXPR_START_SET = EnumSet.of(NOT, ADD, SUB, LEFT_PAREN, IDENTIFIER,
+  public static final EnumSet<TokenType> EXPR_FIRST_SET = EnumSet.of(NOT, ADD, SUB, LEFT_PAREN, IDENTIFIER,
       INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
 
   @Override
   public ICodeNode parse(Token token) throws Exception {
-    token = synchronize(EXPR_START_SET);
+    token = synchronize(EXPR_FIRST_SET);
     ICodeNode expressionNode = parseTest(token);
 
     if (currentToken().getType() == ASSIGN) {
@@ -59,7 +59,7 @@ public class ExprStmtParser extends StatementParser {
     }
 
     if (currentToken().getType() == END_OF_LINE) {
-      match(END_OF_LINE); // consume END_OF_LINE token
+      //match(END_OF_LINE); // consume END_OF_LINE token
     } else {
       nextToken();  // TODO
       errorHandler.flag(token, MISSING_END_OF_LINE, this);

@@ -25,8 +25,8 @@ public class WhileStmtParser extends StatementParser {
     super(parent);
   }
 
-  private static final EnumSet<TokenType> TEST_FIRST_SET = EnumSet.of(NOT, ADD, SUB, LEFT_PAREN, IDENTIFIER,
-      INTEGER_CONSTANT, FLOAT_CONSTANT, STRING_LITERAL, NONE_TOKEN, TRUE_TOKEN, FALSE_TOKEN);
+
+  private static final EnumSet<TokenType> TEST_FIRST_SET = ExprStmtParser.EXPR_FIRST_SET.clone();
   /**
    * Parse while statement and return intermediate code node of while statement.
    *
@@ -58,7 +58,6 @@ public class WhileStmtParser extends StatementParser {
     }
     iCodeNode.addChild(compoundStatement);
     match(END);
-    match(END_OF_LINE);
 
     return iCodeNode;
   }
