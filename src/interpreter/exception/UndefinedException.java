@@ -5,8 +5,8 @@ package interpreter.exception;
  * <p>
  * <p>Exception will be raised when use a undefine name.</p>
  */
-public class UndefinedException extends SchniusException {
-  public UndefinedException(String exceptionMessage) {
-    super(exceptionMessage);
+public class UndefinedException extends SchinusException {
+  public UndefinedException(String name) {
+    super("name " + name + " not defined.");
   }
 }
