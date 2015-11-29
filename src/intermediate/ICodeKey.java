@@ -13,6 +13,4 @@ public enum ICodeKey {
 
   CLASS_NAME,
   BASE_CLASSES_NAME,
-  // WAIT TO DELETE
-  VARIABLE_NAME
 }
