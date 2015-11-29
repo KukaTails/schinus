@@ -1,6 +1,8 @@
 package frontend.parsers;
 
-import static frontend.TokenType.*;
+import static frontend.TokenType.END;
+import static frontend.TokenType.WHILE;
+import static frontend.TokenType.END_OF_LINE;
 import static intermediate.ICodeNodeType.WHILE_STATEMENT;
 import static intermediate.ICodeNodeType.COMPOUND_STATEMENT;
 
@@ -38,7 +40,7 @@ public class WhileStmtParser extends StatementParser {
   public ICodeNode parse(Token token) throws Exception {
     ICodeNode iCodeNode = ICodeFactory.createICodeNode(WHILE_STATEMENT);
 
-    token = match(WHILE);  // consume token WHILE
+    token = match(WHILE);
 
     // parse expression statement of while
     ExprStmtParser expressionParser = new ExprStmtParser(this);
