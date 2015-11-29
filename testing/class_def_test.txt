@@ -1,0 +1,4 @@
+class x:
+  y = 1
+end
+x.y

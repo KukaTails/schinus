@@ -1,0 +1,13 @@
+a = 0
+sum = 0
+while a < 10
+  sum = sum + a
+  a = a + 1
+end
+a
+sum
+if a >= 10
+  a = 100
+end
+a
+sum
