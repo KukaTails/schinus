@@ -1,13 +1,13 @@
 package interpreter;
 
-import static intermediate.ICodeNodeType.ATOM_EXPR_NODE;
 import static intermediate.ICodeNodeType.EXPRESSION_NODE;
+import static objectmodel.predefined.PredefinedType.FLOAT;
+import static objectmodel.predefined.PredefinedType.STRING;
+import static objectmodel.predefined.PredefinedType.INTEGER;
+import static objectmodel.predefined.PredefinedType.BOOLEAN;
 import static objectmodel.predefined.PredefinedConstant.NONE;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
-import static objectmodel.predefined.PredefinedType.*;
 
-import intermediate.ICodeNodeType;
-import interpreter.exception.ReturnFlowException;
 import message.Message;
 import message.MessageHandler;
 import message.MessageListener;
@@ -17,7 +17,6 @@ import objectmodel.dictionary.Dictionary;
 import interpreter.executors.StmtExecutor;
 
 import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
 
 /**
  * <h1>Executor</h1>
@@ -41,34 +40,32 @@ public class Executor {
   public Executor() {
   }
 
-  /**
-   * @return the error handler.
-   */
   public RuntimeErrorHandler getErrorHandler() {
     return errorHandler;
   }
 
   /**
    * Execute the source program by processing the intermediate code and the environment.
-   *
    * @param iCodeNode   the intermediate code.
    * @param environment the intermediate code executed in the environment.
-   * @throws Exception if an error occurred.
    */
   public void process(ICodeNode iCodeNode, Dictionary environment) {
-    // Get the root node of the intermediate code and execute the node.
-    StmtExecutor statementExecutor = new StmtExecutor();
+    StmtExecutor stmtExecutor = new StmtExecutor();
 
     try {
-      Object result = statementExecutor.execute(iCodeNode, environment);
+      Object result = stmtExecutor.execute(iCodeNode, environment);
       if (iCodeNode.getType() == EXPRESSION_NODE) {
         printObject(result);
       }
     } catch(Exception e) {
-      System.out.println(e);
+      System.out.println(e.getMessage());
     }
   }
 
+  /**
+   * Print the value of object.
+   * @param object the object will be printed.
+   */
   public void printObject(Object object) {
     ExecuteResultPrinter executeResultPrinter = new ExecuteResultPrinter();
 
@@ -80,7 +77,6 @@ public class Executor {
 
   /**
    * Create constant instance in environment.
-   *
    * @param value       the value of instance.
    * @param environment the environment which contains the instance.
    * @return the instance created.
