@@ -1,8 +1,8 @@
 package frontend.parsers;
 
 import static frontend.TokenType.END_OF_LINE;
-import static intermediate.ICodeNodeType.EMPTY_STATEMENT;
 import static intermediate.ICodeNodeType.ERROR_NODE;
+import static intermediate.ICodeNodeType.EMPTY_STATEMENT;
 
 import frontend.Token;
 import frontend.Parser;
@@ -29,56 +29,62 @@ public class StatementParser extends Parser {
    * @throws Exception if an error occurred.
    */
   public ICodeNode parse(Token token) throws Exception {
-    ICodeNode statementNode;
+    ICodeNode stmtNode;
 
     try {
       switch(token.getType()) {
 
         case IF: {
-          IfStmtParser ifStatementParser = new IfStmtParser(this);
-          statementNode = ifStatementParser.parse(token);
+          IfStmtParser ifStmtParser = new IfStmtParser(this);
+          stmtNode = ifStmtParser.parse(token);
           break;
         }
 
         case WHILE: {
           WhileStmtParser whileStmtParser = new WhileStmtParser(this);
-          statementNode = whileStmtParser.parse(token);
+          stmtNode = whileStmtParser.parse(token);
           break;
         }
 
         case RETURN: {
           ReturnStmtParser returnStmtParser = new ReturnStmtParser(this);
-          statementNode = returnStmtParser.parse(token);
+          stmtNode = returnStmtParser.parse(token);
           break;
         }
 
         case DEF: {
-          FuncDefStmtParser functionDefStatementParser = new FuncDefStmtParser(this);
-          statementNode = functionDefStatementParser.parse(token);
+          FuncDefStmtParser funcDefStmtParser = new FuncDefStmtParser(this);
+          stmtNode = funcDefStmtParser.parse(token);
           break;
         }
 
         case CLASS: {
           ClassDefStmtParser classDefStmtParser = new ClassDefStmtParser(this);
-          statementNode = classDefStmtParser.parse(token);
+          stmtNode = classDefStmtParser.parse(token);
+          break;
+        }
+
+        case BREAK: {
+          BreakStmtParser breakStmtParser = new BreakStmtParser(this);
+          stmtNode = breakStmtParser.parse(token);
           break;
         }
 
         case END_OF_LINE: {
-          match(END_OF_LINE);  // consume end of line
-          statementNode = ICodeFactory.createICodeNode(EMPTY_STATEMENT);
+          match(END_OF_LINE);
+          stmtNode = ICodeFactory.createICodeNode(EMPTY_STATEMENT);
           break;
         }
 
         default: {
-          ExprStmtParser expressionParser = new ExprStmtParser(this);
-          statementNode = expressionParser.parse(token);
+          ExprStmtParser exprStmtParser = new ExprStmtParser(this);
+          stmtNode = exprStmtParser.parse(token);
           break;
         }
       }
     } catch(SyntaxErrorException e) {
-      statementNode = ICodeFactory.createICodeNode(ERROR_NODE);
+      stmtNode = ICodeFactory.createICodeNode(ERROR_NODE);
     }
-    return statementNode;
+    return stmtNode;
   }
 }
