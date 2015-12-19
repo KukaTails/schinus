@@ -1,6 +1,5 @@
 package interpreter.executors;
 
-import static frontend.TokenType.*;
 import static intermediate.ICodeKey.*;
 import static intermediate.ICodeNodeType.*;
 import static interpreter.RuntimeErrorCode.*;
@@ -8,17 +7,22 @@ import static objectmodel.predefined.PredefinedType.TMPTYPE;
 import static objectmodel.predefined.PredefinedConstant.NONE;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 
-import frontend.TokenType;
 import interpreter.Executor;
 import intermediate.ICodeNode;
 import intermediate.ICodeNodeType;
-import objectmodel.baseclasses.*;
-import objectmodel.baseclasses.Class;
 import objectmodel.dictionary.Dictionary;
+import objectmodel.baseclasses.Base;
+import objectmodel.baseclasses.Class;
+import objectmodel.baseclasses.Instance;
+import objectmodel.baseclasses.MethodInstance;
+import objectmodel.baseclasses.PredefinedFuncInstance;
+import interpreter.exception.SchinusException;
+import interpreter.exception.UndefinedException;
 import interpreter.exception.NotCallableException;
 
 import java.util.EnumSet;
 import java.util.ArrayList;
+import java.io.IOException;
 
 /**
  * <h1>ExpressionStatementExecutor</h1>
@@ -33,7 +37,8 @@ public class ExprStmtExecutor extends Executor {
    * @param node the intermediate code node of the expression statement.
    * @return the computed value of the expression.
    */
-  public Object execute(ICodeNode node, Dictionary environment) throws Exception {
+  public Object execute(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     ICodeNodeType nodeType = node.getType();
     Object result = NO_PRINT;
 
@@ -55,14 +60,15 @@ public class ExprStmtExecutor extends Executor {
     return result;
   }
 
-  private Object executeAssignExp(ICodeNode node, Dictionary environment) throws Exception {
+  private Object executeAssignExp(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     ArrayList<ICodeNode> children = node.getChildren();
     ICodeNode assignedNode = children.get(0);
     ICodeNode expNode = children.get(1);
 
     Base assignedObject = (Base) executeTest(assignedNode, environment);
-    Dictionary existedEnv = ((Base) assignedObject).getExistedEnv();
-    String variableName = (String) ((Base) assignedObject).readAttribute("__referenced_name__");
+    Dictionary existedEnv = assignedObject.getExistedEnv();
+    String variableName = (String) (assignedObject).readAttribute("__referenced_name__");
     Object expObject = executeTest(expNode, environment);
 
     assignedObject.getFields().remove("__referenced_name__");
@@ -76,15 +82,23 @@ public class ExprStmtExecutor extends Executor {
     return NONE;
   }
 
-  public Object executeExpr(ICodeNode node, Dictionary environment) throws Exception {
+  public Object executeExpr(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     node = node.getChildren().get(0);
-    return executeTest(node, environment);
+    Object result = executeTest(node, environment);
+
+    if (((Base)result).readAttribute("__undefined__") != null) {
+      throw new UndefinedException((String)((Base)result).readAttribute("__name__"));
+    }
+
+    return result;
   }
 
 
-  public Object executeTest(ICodeNode node, Dictionary environment) throws Exception {
+  public Object executeTest(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     ICodeNodeType nodeType = node.getType();
-    Object result = NONE;
+    Object result;
 
     switch(nodeType) {
       case LOGICAL_OR_OP: {
@@ -141,7 +155,8 @@ public class ExprStmtExecutor extends Executor {
     return result;
   }
 
-  private Object executeOrTest(ICodeNode node, Dictionary environment) throws Exception {
+  private Object executeOrTest(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     ArrayList<ICodeNode> children = node.getChildren();
 
     for (ICodeNode child : children) {
@@ -153,7 +168,8 @@ public class ExprStmtExecutor extends Executor {
     return createConstantInstance(false, environment, environment);
   }
 
-  public Object executeAndTest(ICodeNode node, Dictionary environment) throws Exception {
+  public Object executeAndTest(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     ArrayList<ICodeNode> children = node.getChildren();
 
     for (ICodeNode child : children) {
@@ -165,7 +181,8 @@ public class ExprStmtExecutor extends Executor {
     return createConstantInstance(true, environment, environment);
   }
 
-  public Object executeNotTest(ICodeNode node, Dictionary environment) throws Exception {
+  public Object executeNotTest(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     if (node.getType() != LOGICAL_NOT_OP) {
       return executeTest(node, environment);
     } else {
@@ -202,7 +219,8 @@ public class ExprStmtExecutor extends Executor {
    * @param node the root node of the expression.
    * @return the computed value of the expression.
    */
-  private Object executeComparisonExpression(ICodeNode node, Dictionary environment) throws Exception {
+  private Object executeComparisonExpression(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     // Get the two operand children of the operator node.
     ICodeNodeType nodeType = node.getType();
     ArrayList<ICodeNode> children = node.getChildren();
@@ -237,7 +255,7 @@ public class ExprStmtExecutor extends Executor {
             arithResult = value1 * value2;
             break;
           case POWER_OP: {
-            arithResult = Math.pow(value1, value2);
+            arithResult = (float)Math.pow(value1, value2);
             break;
           }
           case FLOAT_DIVIDE_OP: {
@@ -286,7 +304,7 @@ public class ExprStmtExecutor extends Executor {
             arithResult = value1 - value2;
             break;
           case POWER_OP:
-            arithResult = Math.pow(value1, value2);
+            arithResult = (float)Math.pow(value1, value2);
             break;
           case MULTIPLY_OP:
             arithResult = value1 * value2;
@@ -296,7 +314,6 @@ public class ExprStmtExecutor extends Executor {
             break;
           }
           case FLOAT_DIVIDE_OP: {
-            // Check for division by zero.
             if (value2 != 0.0f) {
               arithResult = value1 / value2;
             } else {
@@ -386,11 +403,12 @@ public class ExprStmtExecutor extends Executor {
     }
   }
 
-  private Object executeAtomExpr(ICodeNode iCodeNode, Dictionary environment) throws Exception {
+  private Object executeAtomExpr(ICodeNode iCodeNode, Dictionary environment)
+      throws SchinusException, IOException {
     ArrayList<ICodeNode> children = iCodeNode.getChildren();
     ICodeNode currentNode = children.get(0);
     Dictionary currentEnv = environment;
-    Object currentObject = executeAtom(currentNode, currentEnv);
+    Object currentObject = (Base)executeAtom(currentNode, currentEnv);
 
     if (children.size() == 1) {
       return currentObject;
@@ -402,9 +420,15 @@ public class ExprStmtExecutor extends Executor {
 
       switch(nodeType) {
         case ARGUMENTS_TRAILER: {
+          // object is not defined
+          if ((Boolean)((Base)currentObject).readAttribute("__undefined__") != null) {
+            //errorHandler.flag(currentNode, UNDEFINED_NAME, this);
+            throw new UndefinedException((String)children.get(i-1).getAttribute(IDENTIFIER_NAME));
+          }
+
           // object is not callable
-          if (!(currentObject instanceof MethodInstance ||
-              currentObject instanceof Class || currentObject instanceof PredefinedFuncInstance)) {
+          if (!(currentObject instanceof MethodInstance || currentObject instanceof Class
+              || currentObject instanceof PredefinedFuncInstance)) {
             errorHandler.flag(child, CALL_UNCALLABLE_OBJECT, this);
             throw new NotCallableException((String)child.getAttribute(IDENTIFIER_NAME));
           }
@@ -441,18 +465,24 @@ public class ExprStmtExecutor extends Executor {
 
         case FIELD_TRAILER: {
           String fieldName = (String) child.getAttribute(FIELD_NAME);
+
+          if (((Base)currentObject).readAttribute("__undefined__") != null) {
+            String variableName = (String)((Base)currentObject).readAttribute("__name__");
+            currentEnv.remove(variableName);
+            throw new UndefinedException(variableName);
+          }
           currentObject = ((Base) currentObject).readAttribute(fieldName);
 
           if (currentObject == null && i == children.size() - 1) {
             currentObject = new Instance(TMPTYPE, new Dictionary(), currentEnv, currentEnv);
             ((Base) currentObject).writeAttr("__name__", fieldName);
+            ((Base) currentObject).writeAttr("__undefined__", true);
             currentEnv.put(fieldName, currentObject);
           }
 
           if (currentObject == null && i != children.size() - 1) {
-            errorHandler.flag(currentNode, UNDEFINED_NAME, this);
+            throw new UndefinedException(fieldName);
           }
-
           break;
         }
 
@@ -472,7 +502,8 @@ public class ExprStmtExecutor extends Executor {
    * @param environment the environment used to execute intermediate code node.
    * @return result of executing the intermediate code node.
    */
-  private Object executeAtom(ICodeNode node, Dictionary environment) throws Exception {
+  private Object executeAtom(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     ICodeNodeType nodeType = node.getType();
 
     switch(nodeType) {
@@ -483,6 +514,7 @@ public class ExprStmtExecutor extends Executor {
         if (identifier == null) {
           identifier = new Instance(TMPTYPE, new Dictionary(), environment, environment);
           ((Base) identifier).writeAttr("__name__", node.getAttribute(IDENTIFIER_NAME));
+          ((Base) identifier).writeAttr("__undefined__", true);
         }
         ((Base)identifier).writeAttr("__referenced_name__", node.getAttribute(IDENTIFIER_NAME));
         return identifier;
@@ -506,7 +538,8 @@ public class ExprStmtExecutor extends Executor {
     }
   }
 
-  private ArrayList<Object> executeArguList(ICodeNode node, Dictionary environment) throws Exception {
+  private ArrayList<Object> executeArguList(ICodeNode node, Dictionary environment)
+      throws IOException, SchinusException {
     ArrayList<ICodeNode> arguments = node.getChildren();
     ArrayList<Object> argumentsObject = new ArrayList<>();
 
@@ -518,9 +551,10 @@ public class ExprStmtExecutor extends Executor {
     return argumentsObject;
   }
 
-  private Object executeArgument(ICodeNode node, Dictionary environment) throws Exception {
+  private Object executeArgument(ICodeNode node, Dictionary environment)
+      throws SchinusException, IOException {
     ArrayList<ICodeNode> children = node.getChildren();
-    Object argument = NONE;
+    Object argument;
 
     if (children.size() == 2) {
       ICodeNode leftExpNode = children.get(0);
