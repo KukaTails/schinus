@@ -8,6 +8,7 @@ import static objectmodel.predefined.PredefinedType.BOOLEAN;
 import static objectmodel.predefined.PredefinedConstant.NONE;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 
+import interpreter.exception.UndefinedException;
 import message.Message;
 import message.MessageHandler;
 import message.MessageListener;
@@ -57,6 +58,8 @@ public class Executor {
       if (iCodeNode.getType() == EXPRESSION_NODE) {
         printObject(result);
       }
+    } catch(UndefinedException e) {
+      System.out.println(e.getMessage());
     } catch(Exception e) {
       System.out.println(e.getMessage());
     }
