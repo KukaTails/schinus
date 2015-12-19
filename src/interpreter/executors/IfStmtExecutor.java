@@ -1,15 +1,15 @@
 package interpreter.executors;
 
 import static intermediate.ICodeNodeType.ELSE_BRANCH;
-import static intermediate.ICodeNodeType.POWER_OP;
-import static objectmodel.predefined.PredefinedConstant.NONE;
+import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 
 import intermediate.ICodeNode;
 import intermediate.ICodeNodeType;
 import objectmodel.baseclasses.Instance;
 import objectmodel.dictionary.Dictionary;
-import interpreter.exception.ReturnFlowException;
+import interpreter.exception.SchinusException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -27,52 +27,47 @@ public class IfStmtExecutor extends StmtExecutor {
    * @return the result of execute if statement
    */
   public Object execute(ICodeNode iCodeNode, Dictionary environment)
-      throws ReturnFlowException {
-    ExprStmtExecutor expressionStatementExecutor = new ExprStmtExecutor();
-    StmtExecutor statementExecutor = new StmtExecutor();
+      throws SchinusException, IOException {
+    ExprStmtExecutor exprStmtExecutor = new ExprStmtExecutor();
+    StmtExecutor stmtExecutor = new StmtExecutor();
+    Object executeResult = NO_PRINT;
+
     ArrayList<ICodeNode> branches = iCodeNode.getChildren();
-    Object executeResult = NONE;
 
     // execute all branches of if statement
     for (ICodeNode branch : branches) {
       ArrayList<ICodeNode> children = branch.getChildren();
       ICodeNodeType nodeType = branch.getType();
-      ICodeNode conditionExpression = null;
-      ICodeNode bodyNode = null;
+      ICodeNode conditionExpr = null;
+      ICodeNode bodyNode;
 
       if (nodeType != ELSE_BRANCH) {
-        conditionExpression = children.get(0);
+        conditionExpr = children.get(0);
         bodyNode = children.get(1);
       } else {
         bodyNode = children.get(0);
       }
 
       // execute condition expression of branches
-      try {
-        Object conditionResult;
-        boolean result = true;
+      Object conditionResult;
+      boolean result = true;
 
-        if (nodeType != ELSE_BRANCH) {
-          conditionResult = expressionStatementExecutor.execute(conditionExpression, environment);
-          result = checkConditionResult(conditionResult);
-        }
-        // execute one statement of branches or no statement
-        if (result) {
-          executeResult = statementExecutor.execute(bodyNode, environment);
-          break;
-        }
-      } catch(ReturnFlowException e) {
-        throw e;
-      } catch(Exception e) {
-        System.out.println(e);
+      if (nodeType != ELSE_BRANCH) {
+        conditionResult = exprStmtExecutor.execute(conditionExpr, environment);
+        result = checkConditionResult(conditionResult);
+      }
+      // execute one statement of branches or no statement
+      if (result) {
+        executeResult = stmtExecutor.execute(bodyNode, environment);
+        break;
       }
     }
+
     return executeResult;
   }
 
   /**
    * Check the result of condition expression of all branches.
-   *
    * @param conditionResult result of condition result.
    * @return if the condition result if true or false
    */
