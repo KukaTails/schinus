@@ -1,14 +1,14 @@
 package interpreter.executors;
 
-import static intermediate.ICodeNodeType.RETURN_STATEMENT;
 import static objectmodel.predefined.PredefinedConstant.NO_PRINT;
 
 import intermediate.ICodeNode;
-import intermediate.ICodeNodeType;
-import interpreter.exception.ReturnFlowException;
 import objectmodel.baseclasses.Instance;
 import objectmodel.dictionary.Dictionary;
+import interpreter.exception.SchinusException;
+import interpreter.exception.BreakFlowException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -27,25 +27,19 @@ public class WhileStmtExecutor extends StmtExecutor {
    */
   @Override
   public Object execute(ICodeNode iCodeNode, Dictionary environment)
-      throws ReturnFlowException {
+      throws SchinusException, IOException {
     ExprStmtExecutor exprStmtExecutor = new ExprStmtExecutor();
     StmtExecutor stmtExecutor = new StmtExecutor();
 
     ICodeNode expressionNode = iCodeNode.getChildren().get(0);
     ICodeNode compoundStatementNode = iCodeNode.getChildren().get(1);
 
-    try {
-      while (true) {
-        Object expressionResult = exprStmtExecutor.execute(expressionNode, environment);
+    while (true) {
+      Object expressionResult = exprStmtExecutor.execute(expressionNode, environment);
 
-        if (!checkConditionResult(expressionResult))
-          break;
-        stmtExecutor.execute(compoundStatementNode, environment);
-      }
-    } catch(ReturnFlowException e) {
-      throw e;
-    } catch(Exception e) {
-      System.out.println(e);
+      if (!checkConditionResult(expressionResult))
+        break;
+      stmtExecutor.execute(compoundStatementNode, environment);
     }
     return null;
   }
@@ -56,12 +50,18 @@ public class WhileStmtExecutor extends StmtExecutor {
    * @param compoundNode intermediate code node of compound statement.
    * @param environment  environment to execute compound statement.
    */
-  private Object executeCompoundStmt(ICodeNode compoundNode, Dictionary environment) throws ReturnFlowException {
+  private Object executeCompoundStmt(ICodeNode compoundNode, Dictionary environment)
+      throws SchinusException, IOException {
     ArrayList<ICodeNode> stmtsNode = compoundNode.getChildren();
     StmtExecutor stmtExecutor = new StmtExecutor();
     Object result = NO_PRINT;
-    for (ICodeNode stmtNode : stmtsNode) {
-      result = stmtExecutor.execute(stmtNode, environment);
+
+    try {
+      for (ICodeNode stmtNode : stmtsNode) {
+        result = stmtExecutor.execute(stmtNode, environment);
+      }
+    } catch(BreakFlowException e) {
+      return result;
     }
     return result;
   }
@@ -83,7 +83,7 @@ public class WhileStmtExecutor extends StmtExecutor {
     } else if (conditionResult instanceof Float) {
       return ((Float) conditionResult) == 0.0;
     } else if (conditionResult instanceof String) {
-      return (String) conditionResult != "";
+      return conditionResult != "";
     } else {
       return true;
     }
