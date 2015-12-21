@@ -28,6 +28,7 @@ public class Class extends Base {
     super(metaClass, fields, parentDict, existedEnv);
     this.name = name;
     this.baseClass = baseClass;
+    writeAttr("__name__", name);
   }
 
   /**
