@@ -38,7 +38,7 @@ public class SpecialSymbolToken extends Token {
 
     if (source.atEol() || source.atEof()) {
       type = END_OF_LINE;
-      nextChar(); // consume EOL
+      source.addPosition(); // consume EOL
       return;
     }
 
