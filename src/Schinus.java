@@ -1,3 +1,5 @@
+import static frontend.TokenType.END_OF_LINE;
+
 import frontend.Token;
 import frontend.Source;
 import frontend.Parser;
@@ -27,7 +29,7 @@ public class Schinus {
     boolean inputFromConsole = false;
     boolean firstParse = true;
     Token token;
-    filePath = "E:\\test.txt";
+    //filePath = "E:\\test.txt";
 
     try {
       if (filePath != null) {
@@ -56,6 +58,10 @@ public class Schinus {
           parser.nextToken();
           firstParse = false;
         }
+
+        while (parser.currentToken().getType() == END_OF_LINE)
+          parser.nextToken();
+
         ICodeNode node = parser.parse();
         if (parser.getErrorCount() == 0) {
           executor.process(node, globalEnvironment);
@@ -72,7 +78,6 @@ public class Schinus {
 
   /**
    * The main method.
-   *
    * @param args command-line arguments: "execute" followed
    *             by optional flags followed by the source file path.
    */
