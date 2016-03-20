@@ -4,8 +4,8 @@ import static objectmodel.predefined.PredefinedType.BOOLEAN;
 import static objectmodel.predefined.PredefinedType.OBJECT;
 
 import objectmodel.baseclasses.Instance;
-import objectmodel.baseclasses.PredefinedFuncInstance;
 import objectmodel.dictionary.Dictionary;
+import objectmodel.predefined.predefinedMethods.PredefinedFunction;
 
 public class PredefinedConstant {
   public static Dictionary GLOBAL_DICT = new Dictionary();

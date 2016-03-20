@@ -11,7 +11,7 @@ public enum ICodeNodeType {
   EMPTY_STATEMENT, // empty statement
 
   EXPRESSION_STATEMENT, EXPRESSION_NODE, COMPOUND_STATEMENT,
-  IF_STATEMENT, IF_BRANCH, ELIF_BRANCH, ELSE_BRANCH,// selection_branch used in if statement to represent a branch
+  IF_STATEMENT, IF_BRANCH, ELIF_BRANCH, ELSE_BRANCH,   // selection_branch used in if statement to represent a branch
   WHILE_STATEMENT,
   FUNCTION_DEFINE_STATEMENT, FUNCTION_NAME, PARAMETERS, FUNCTION_BODY, // function define
   RETURN_STATEMENT,
