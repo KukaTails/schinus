@@ -1,0 +1,33 @@
+/******************************** Reserved words *******************************/
+// basic operators
+ADD("+"), SUB("-"), MUL("*"), POWER("**"), FLOAT_DIV("/"), INTEGER_DIV("//"), MOD("%"),
+ADD_ASSIGN("+="), SUB_ASSIGN("-="), MUL_ASSIGN("*="), DIV_ASSIGN("/="), MOD_ASSIGN("%="),
+
+// relational operators
+GREAT_THAN(">"), LESS_THAN("<"),
+GREAT_EQUAL(">="), LESS_EQUAL("<="),
+EQUAL("=="), NOT("!"), NOT_EQUAL("!="),
+
+// logical operators
+LOGICAL_AND("and"), LOGICAL_OR("or"), LOGICAL_NOT("not"),
+
+// other operators
+ASSIGN("="), DOT("."),
+ELLIPSIS("..."),
+
+// control flow keyword
+IF, ELIF, ELSE, DO, WHILE, CONTINUE, BREAK, RETURN, END,
+
+// boolean constant
+FALSE_TOKEN("False"), TRUE_TOKEN("True"), NONE_TOKEN("None"),
+
+DEF,   // function define
+CLASS, // class define
+
+// other symbols
+COMMA(","), SEMICOLON(";"), END_OF_LINE("\n"),
+LEFT_PAREN("("), RIGHT_PAREN(")"), LEFT_BRACKET("["), RIGHT_BRACKET("]"),
+
+// other token types
+IDENTIFIER, FLOAT_CONSTANT, INTEGER_CONSTANT, CHAR_CONSTANT, STRING_LITERAL,
+ERROR, END_OF_FILE

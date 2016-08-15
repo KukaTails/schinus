@@ -1,0 +1,146 @@
+1) <statement> := <compound-statement>
+               := <if-statement>
+               := <while-statement>
+               := <return-statement>
+               := <break-statement>
+               := <function-define-statement>
+               := <class-define-statement>
+               := <expression-statement>
+               := <assigment-statement>
+
+2) <compound-statement> := <statement> EOL { <statement> EOL }
+
+3) <if-statement> := "if" <expression> EOL <expression> { "elif" <expression> EOL <expression> } ["else" EOL <expression>] "end"
+
+4) <while-statement> := "while" <expression> EOL <statement> "end"
+
+5) <return-statement> := "return" <expression> EOL
+
+6) <break-statement> := "break" EOL
+
+7) <function-define-statement> := "def" NAME <parameters> EOL <suite> END
+   <parameters> := '(' [parameter_name_list] ')'
+   <parameter_name_list> := NAME {, NAME}
+
+8) <class-define-statement> := "class" NAME [ "(" [ <arglist> ] ")" ] EOL <suite>
+
+9) <assigment-statement> := variable = <expression> EOL
+                         := variable (+= | -= | *= | /=) <expression> EOL
+
+10) <expression-statement> := <expression> EOL
+
+11) <expression> := <or_test_expression>
+12) <or_test_expression>  := <and_test_expression> { "or"  <and_test_expression> }
+13) <and_test_expression> := <not_test_expression> { "and" <not_test_expression> }
+14) <not_test_expression> := "not" <not_test_expression> | <comparison_expression>
+15) <comparison_expression> := <arith_expr> { <comp_op> <arith_exprssion> }
+16) <comp_op>: '<'|'>'|'=='|'>='|'<='|'<>'|'!=' | 'is'|'is' 'not'
+17) <arith_expr> := <term> { ("+" | "=") <term> }
+18) <term> := <factor> { ("*" | "/" | "//" | "%") <factor> }
+19) <factor> := ("+" | "=") <factor> | <power>
+20) <power> := <atom_expr> ["**" <factor> ]
+21) <atom_expr> := <atom> { <trailer> }
+22) <atom> := NAME | NUMBER | STRING | "None" | "True" | "False"
+24) <trailer> := "(" [<arguments-list>] ")" | "[" <subscriptlist> "]" | "." NAME
+27) <argument-list> := <argument> { "," <argument> }
+28) <argument> := <expression>
+25) <subscript-list> := <subscript> {"," <subscript> } 
+26) <subscript> := <expression>
+
+=========================================================
+
+<suite> := { <statement> EOL }
+================================================================ statement ===================================================
+
+<statement> := <simple-statement> | <compound-statement>
+
+========================================================== compound=statement ================================================
+
+compound-statement := 
+                    | <if-statement>
+                    | <while-statement>
+                    | <function-define-statement>
+                    | <class-define-statement>
+
+========================================== if statement ===================================================================
+
+<if-statement> :=  IF <test> EOL <suite> { elif <test> EOL <suite> } [else EOL <test>] end
+
+========================================== while statement ================================================================
+
+<while-statement> := while <test> EOL <suite> end
+
+========================================== function define statement =======================================================
+
+<function-define-statement> := "def" NAME <parameters> EOL <suite> END
+<parameters> := '(' [typedargslist] ')'
+<typedargslist> := NAME ['=' <test>] { ',' NAME ['=' test] }
+
+========================================== class define statement ==========================================================
+
+<class-define-statement> := "class" NAME [ "(" [ <arglist> ] ")" ] EOL <suite>
+
+============================================ simple-expression =============================================================
+<simple-statement> := <expression-statement> | <flow-statement> | <empty-statement>
+
+<empty-statement> := EOL
+
+<flow-statement> := <return-statement>
+
+// assignment=statement is in expression-statement
+<expression-statement> := <test> ( "=" <test> | <augassign> <test> ) EOL 
+
+============================================ test ===========================================================
+<test>     := <or_test>
+<or_test>  := <and_test> { "or"  <and_test> }
+<and_test> := <not_test> { "and" <not_test> }
+<not_test> := "not" <not_test> | <comparison>
+<comparison> := <expr> { <comp_op> <expr> }
+<comp_op>: '<'|'>'|'=='|'>='|'<='|'<>'|'!=' | 'is'|'is' 'not'
+<expr> := <arith_expr>
+<arith_expr> := <term> { ("+" | "=") <term> }
+<term> := <factor> { ("*" | "/" | "//" | "%") <factor> }
+<factor> := ("+" | "=") <factor> | <power>
+<power> := <atom_expr> ["**" <factor> ]
+<atom_expr> := <atom> { <trailer> }
+<atom> := "(" [<testlist_comp>] ")" | NAME | NUMBER | STRING | "None" | "True" | "False"
+
+
+<testlist_comp> := <test>
+
+<trailer> := "(" [<arglist>] ")" | "[" <subscriptlist> "]" | "." NAME
+
+<subscriptlist> := <subscript> 
+
+<subscript> := <test>
+
+<arglist> := <argument> { "," <argument> }
+
+<argument> := <test> | <test> "=" <test>
+
+
+
+=================================================== old syntax =================================================
+
+<function=define> := def identifier '(' <parameter=list> ')': <compound=statement>
+
+<parameter=list> := identifier { , identifier }
+                    
+<function=call=expression> := variable '(' parameter=list ')'
+
+<variable> := identifier {. identifier}
+
+<class=define> := class identifier '(' identifier ')': NED_OF_LINE <compound=statement> END
+
+
+//========================= expression ========================
+
+<expression> := <simple=expression> relop <simple=expression>
+
+<simple=expression> := <term> { (+ | =) <term> }
+
+<term> := <term> { (* | / | %) <term> }
+
+<factor> := <call=expression> | <variable> | NUMBERS
+
+<variable> := <identifier> { (. identifier) | ("(" <parameter-list> ")" }
